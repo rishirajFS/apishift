@@ -1,0 +1,483 @@
+{
+  "calls": [
+    {
+      "arguments": "{}",
+      "id": "call_1",
+      "invalid": false,
+      "name": "list_contacts",
+      "response": {
+        "body": {
+          "items": [
+            {
+              "email": "ines.alvarez@umbrella.org",
+              "id": "con_31b1130fe8",
+              "name": "Ines Alvarez"
+            },
+            {
+              "email": "omar.patel@acme.io",
+              "id": "con_b65ed38be5",
+              "name": "Omar Patel"
+            },
+            {
+              "email": "noah.kowalski@initech.dev",
+              "id": "con_d773e53b00",
+              "name": "Noah Kowalski"
+            },
+            {
+              "email": "ana.larsen@globex.com",
+              "id": "con_254ba5300a",
+              "name": "Ana Larsen"
+            },
+            {
+              "email": "quinn.dubois@umbrella.org",
+              "id": "con_014f3382b6",
+              "name": "Quinn Dubois"
+            },
+            {
+              "email": "chen.brooks@umbrella.org",
+              "id": "con_ba5c9d4634",
+              "name": "Chen Brooks"
+            },
+            {
+              "email": "tara.haddad@initech.dev",
+              "id": "con_a2f6d3ef16",
+              "name": "Tara Haddad"
+            }
+          ]
+        },
+        "status": 200
+      },
+      "turn": 1
+    },
+    {
+      "arguments": "{\"endpoint\": \"create_event\"}",
+      "id": "call_2",
+      "invalid": false,
+      "name": "get_api_docs",
+      "response": {
+        "body": {
+          "description": "Create a calendar event.",
+          "endpoint": "create_event",
+          "error_format": "Errors return {status, error: {type, code, message, param?, hint?}}.",
+          "notes": [
+            "Date-times are now ISO 8601 in UTC, e.g. 2026-10-01T14:00:00Z."
+          ],
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "attendees": {
+                "description": "Attendee email addresses.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "end": {
+                "description": "End time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.",
+                "type": "string"
+              },
+              "location": {
+                "description": "Location.",
+                "type": "string"
+              },
+              "start": {
+                "description": "Start time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.",
+                "type": "string"
+              },
+              "title": {
+                "description": "Event title.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "start",
+              "end"
+            ],
+            "type": "object"
+          },
+          "returns": "Event object {id, title, start, end, attendees, location, status}."
+        },
+        "status": 200
+      },
+      "turn": 2
+    },
+    {
+      "arguments": "{\"attendees\": [\"tara.haddad@initech.dev\"], \"end\": \"2026-10-26T14:45:00Z\", \"start\": \"2026-10-26T14:00:00Z\", \"title\": \"Launch Prep\"}",
+      "id": "call_3",
+      "invalid": false,
+      "name": "create_event",
+      "response": {
+        "body": {
+          "attendees": [
+            "tara.haddad@initech.dev"
+          ],
+          "end": "2026-10-26T14:45:00Z",
+          "id": "evt_b525f97055",
+          "location": null,
+          "start": "2026-10-26T14:00:00Z",
+          "status": "confirmed",
+          "title": "Launch Prep"
+        },
+        "status": 201
+      },
+      "turn": 3
+    }
+  ],
+  "episode_id": "calendar.create_meeting.08__format_change__s0__oracle_docs",
+  "final_answer": "Done.",
+  "invalid_calls": 0,
+  "max_turns": 8,
+  "messages": [
+    {
+      "content": "You are an operations assistant with access to the calendar API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
+      "role": "system"
+    },
+    {
+      "content": "Schedule a 45-minute meeting titled 'Launch Prep' with Tara Haddad on 2026-10-26 from 14:00 to 14:45 UTC.",
+      "role": "user"
+    },
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{}",
+            "name": "list_contacts"
+          },
+          "id": "call_1",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "{\"body\": {\"items\": [{\"email\": \"ines.alvarez@umbrella.org\", \"id\": \"con_31b1130fe8\", \"name\": \"Ines Alvarez\"}, {\"email\": \"omar.patel@acme.io\", \"id\": \"con_b65ed38be5\", \"name\": \"Omar Patel\"}, {\"email\": \"noah.kowalski@initech.dev\", \"id\": \"con_d773e53b00\", \"name\": \"Noah Kowalski\"}, {\"email\": \"ana.larsen@globex.com\", \"id\": \"con_254ba5300a\", \"name\": \"Ana Larsen\"}, {\"email\": \"quinn.dubois@umbrella.org\", \"id\": \"con_014f3382b6\", \"name\": \"Quinn Dubois\"}, {\"email\": \"chen.brooks@umbrella.org\", \"id\": \"con_ba5c9d4634\", \"name\": \"Chen Brooks\"}, {\"email\": \"tara.haddad@initech.dev\", \"id\": \"con_a2f6d3ef16\", \"name\": \"Tara Haddad\"}]}, \"status\": 200}",
+      "name": "list_contacts",
+      "role": "tool",
+      "tool_call_id": "call_1"
+    },
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"endpoint\": \"create_event\"}",
+            "name": "get_api_docs"
+          },
+          "id": "call_2",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "{\"body\": {\"description\": \"Create a calendar event.\", \"endpoint\": \"create_event\", \"error_format\": \"Errors return {status, error: {type, code, message, param?, hint?}}.\", \"notes\": [\"Date-times are now ISO 8601 in UTC, e.g. 2026-10-01T14:00:00Z.\"], \"parameters\": {\"additionalProperties\": false, \"properties\": {\"attendees\": {\"description\": \"Attendee email addresses.\", \"items\": {\"type\": \"string\"}, \"type\": \"array\"}, \"end\": {\"description\": \"End time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.\", \"type\": \"string\"}, \"location\": {\"description\": \"Location.\", \"type\": \"string\"}, \"start\": {\"description\": \"Start time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.\", \"type\": \"string\"}, \"title\": {\"description\": \"Event title.\", \"type\": \"string\"}}, \"required\": [\"title\", \"start\", \"end\"], \"type\": \"object\"}, \"returns\": \"Event object {id, title, start, end, attendees, location, status}.\"}, \"status\": 200}",
+      "name": "get_api_docs",
+      "role": "tool",
+      "tool_call_id": "call_2"
+    },
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"attendees\": [\"tara.haddad@initech.dev\"], \"end\": \"2026-10-26T14:45:00Z\", \"start\": \"2026-10-26T14:00:00Z\", \"title\": \"Launch Prep\"}",
+            "name": "create_event"
+          },
+          "id": "call_3",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "{\"body\": {\"attendees\": [\"tara.haddad@initech.dev\"], \"end\": \"2026-10-26T14:45:00Z\", \"id\": \"evt_b525f97055\", \"location\": null, \"start\": \"2026-10-26T14:00:00Z\", \"status\": \"confirmed\", \"title\": \"Launch Prep\"}, \"status\": 201}",
+      "name": "create_event",
+      "role": "tool",
+      "tool_call_id": "call_3"
+    },
+    {
+      "content": "Done.",
+      "role": "assistant"
+    }
+  ],
+  "min_turns": 4,
+  "mutation": {
+    "change": "datetime_to_iso8601",
+    "fields": [
+      "start",
+      "end"
+    ],
+    "type": "format_change"
+  },
+  "policy": "oracle_docs",
+  "reward": {
+    "invalid_penalty": 0.0,
+    "success": 1.0,
+    "total": 1.0,
+    "turn_penalty": 0.0
+  },
+  "schema_version": 1,
+  "seed": 0,
+  "state_changed": true,
+  "success": true,
+  "task": {
+    "domain": "calendar",
+    "id": "calendar.create_meeting.08",
+    "instruction": "Schedule a 45-minute meeting titled 'Launch Prep' with Tara Haddad on 2026-10-26 from 14:00 to 14:45 UTC.",
+    "split": "test",
+    "template": "create_meeting"
+  },
+  "terminated": "final_answer",
+  "tools": [
+    {
+      "function": {
+        "description": "List events, optionally filtered to one day.",
+        "name": "list_events",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "date": {
+              "description": "Only events starting on this day. Format: date as 'YYYY-MM-DD'.",
+              "type": "string"
+            },
+            "include_cancelled": {
+              "description": "Include cancelled events (default false).",
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Get one event by ID.",
+        "name": "get_event",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "description": "Event ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "event_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Create a calendar event.",
+        "name": "create_event",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "attendees": {
+              "description": "Attendee email addresses.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "end": {
+              "description": "End time. Format: date-time as 'YYYY-MM-DD HH:MM' (24h, UTC).",
+              "type": "string"
+            },
+            "location": {
+              "description": "Location.",
+              "type": "string"
+            },
+            "start": {
+              "description": "Start time. Format: date-time as 'YYYY-MM-DD HH:MM' (24h, UTC).",
+              "type": "string"
+            },
+            "title": {
+              "description": "Event title.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "start",
+            "end"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Update fields of an event.",
+        "name": "update_event",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "end": {
+              "description": "New end time. Format: date-time as 'YYYY-MM-DD HH:MM' (24h, UTC).",
+              "type": "string"
+            },
+            "event_id": {
+              "description": "Event ID.",
+              "type": "string"
+            },
+            "location": {
+              "description": "New location.",
+              "type": "string"
+            },
+            "start": {
+              "description": "New start time. Format: date-time as 'YYYY-MM-DD HH:MM' (24h, UTC).",
+              "type": "string"
+            },
+            "title": {
+              "description": "New title.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "event_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Cancel an event.",
+        "name": "cancel_event",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "description": "Event ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "event_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Add an attendee to an event.",
+        "name": "add_attendee",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "email": {
+              "description": "Attendee email. Format: email address.",
+              "type": "string"
+            },
+            "event_id": {
+              "description": "Event ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "event_id",
+            "email"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Remove an attendee from an event.",
+        "name": "remove_attendee",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "email": {
+              "description": "Attendee email. Format: email address.",
+              "type": "string"
+            },
+            "event_id": {
+              "description": "Event ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "event_id",
+            "email"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "List the user's contacts.",
+        "name": "list_contacts",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {},
+          "required": [],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Create a reminder for an event.",
+        "name": "create_reminder",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "description": "Event ID.",
+              "type": "string"
+            },
+            "minutes_before": {
+              "description": "Minutes before the event start.",
+              "maximum": 10080,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "event_id",
+            "minutes_before"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Get the current documentation for an API endpoint: parameters, formats and return shape. Call with no arguments to list all endpoints.",
+        "name": "get_api_docs",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "description": "Endpoint name, e.g. 'create_event'.",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  ],
+  "turns": 4
+}

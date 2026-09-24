@@ -1,0 +1,476 @@
+{
+  "calls": [
+    {
+      "arguments": "{\"endpoint\": \"list_customers\"}",
+      "id": "call_1",
+      "invalid": false,
+      "name": "get_api_docs",
+      "response": {
+        "body": {
+          "description": "List customers, optionally filtered by exact email.",
+          "endpoint": "list_customers",
+          "error_format": "Errors follow RFC 7807 (application/problem+json): {status, type, title, detail, invalid_params?: [{name, reason}]}. Validation errors use status 422.",
+          "parameters": {
+            "additionalProperties": false,
+            "properties": {
+              "account_id": {
+                "description": "Account to scope the request to. Use 'acct_main'.",
+                "enum": [
+                  "acct_main"
+                ],
+                "type": "string"
+              },
+              "email": {
+                "description": "Exact email to match. Format: email address.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "account_id"
+            ],
+            "type": "object"
+          },
+          "returns": "Object {items: [Customer {id, name, email}]}."
+        },
+        "status": 200
+      },
+      "turn": 1
+    },
+    {
+      "arguments": "{\"account_id\": \"acct_main\"}",
+      "id": "call_2",
+      "invalid": false,
+      "name": "list_customers",
+      "response": {
+        "body": {
+          "items": [
+            {
+              "email": "grace.gupta@initech.dev",
+              "id": "cus_2ba422ea14",
+              "name": "Grace Gupta"
+            },
+            {
+              "email": "ines.larsen@hooli.com",
+              "id": "cus_1238f53cca",
+              "name": "Ines Larsen"
+            },
+            {
+              "email": "jamal.okafor@globex.com",
+              "id": "cus_6834732e3f",
+              "name": "Jamal Okafor"
+            },
+            {
+              "email": "chen.patel@acme.io",
+              "id": "cus_e4284b3b6e",
+              "name": "Chen Patel"
+            },
+            {
+              "email": "hiro.fischer@globex.com",
+              "id": "cus_fc7be96e4f",
+              "name": "Hiro Fischer"
+            },
+            {
+              "email": "farid.dubois@globex.com",
+              "id": "cus_fd078af016",
+              "name": "Farid Dubois"
+            },
+            {
+              "email": "ana.kowalski@initech.dev",
+              "id": "cus_6ed8d552f9",
+              "name": "Ana Kowalski"
+            }
+          ]
+        },
+        "status": 200
+      },
+      "turn": 2
+    },
+    {
+      "arguments": "{\"amount\": 160.99, \"customer_id\": \"cus_6ed8d552f9\", \"description\": \"Training session\"}",
+      "id": "call_3",
+      "invalid": false,
+      "name": "create_charge",
+      "response": {
+        "body": {
+          "amount": 160.99,
+          "amount_refunded": 0.0,
+          "currency": "usd",
+          "customer_id": "cus_6ed8d552f9",
+          "description": "Training session",
+          "id": "ch_137f1f98c4",
+          "status": "succeeded"
+        },
+        "status": 201
+      },
+      "turn": 3
+    }
+  ],
+  "episode_id": "payments.charge_customer.08__error_schema_change__s0__oracle_docs",
+  "final_answer": "Done.",
+  "invalid_calls": 0,
+  "max_turns": 8,
+  "messages": [
+    {
+      "content": "You are an operations assistant with access to the payments API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
+      "role": "system"
+    },
+    {
+      "content": "Charge Ana Kowalski $160.99 for 'Training session'.",
+      "role": "user"
+    },
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"endpoint\": \"list_customers\"}",
+            "name": "get_api_docs"
+          },
+          "id": "call_1",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "{\"body\": {\"description\": \"List customers, optionally filtered by exact email.\", \"endpoint\": \"list_customers\", \"error_format\": \"Errors follow RFC 7807 (application/problem+json): {status, type, title, detail, invalid_params?: [{name, reason}]}. Validation errors use status 422.\", \"parameters\": {\"additionalProperties\": false, \"properties\": {\"account_id\": {\"description\": \"Account to scope the request to. Use 'acct_main'.\", \"enum\": [\"acct_main\"], \"type\": \"string\"}, \"email\": {\"description\": \"Exact email to match. Format: email address.\", \"type\": \"string\"}}, \"required\": [\"account_id\"], \"type\": \"object\"}, \"returns\": \"Object {items: [Customer {id, name, email}]}.\"}, \"status\": 200}",
+      "name": "get_api_docs",
+      "role": "tool",
+      "tool_call_id": "call_1"
+    },
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"account_id\": \"acct_main\"}",
+            "name": "list_customers"
+          },
+          "id": "call_2",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "{\"body\": {\"items\": [{\"email\": \"grace.gupta@initech.dev\", \"id\": \"cus_2ba422ea14\", \"name\": \"Grace Gupta\"}, {\"email\": \"ines.larsen@hooli.com\", \"id\": \"cus_1238f53cca\", \"name\": \"Ines Larsen\"}, {\"email\": \"jamal.okafor@globex.com\", \"id\": \"cus_6834732e3f\", \"name\": \"Jamal Okafor\"}, {\"email\": \"chen.patel@acme.io\", \"id\": \"cus_e4284b3b6e\", \"name\": \"Chen Patel\"}, {\"email\": \"hiro.fischer@globex.com\", \"id\": \"cus_fc7be96e4f\", \"name\": \"Hiro Fischer\"}, {\"email\": \"farid.dubois@globex.com\", \"id\": \"cus_fd078af016\", \"name\": \"Farid Dubois\"}, {\"email\": \"ana.kowalski@initech.dev\", \"id\": \"cus_6ed8d552f9\", \"name\": \"Ana Kowalski\"}]}, \"status\": 200}",
+      "name": "list_customers",
+      "role": "tool",
+      "tool_call_id": "call_2"
+    },
+    {
+      "content": "",
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "function": {
+            "arguments": "{\"amount\": 160.99, \"customer_id\": \"cus_6ed8d552f9\", \"description\": \"Training session\"}",
+            "name": "create_charge"
+          },
+          "id": "call_3",
+          "type": "function"
+        }
+      ]
+    },
+    {
+      "content": "{\"body\": {\"amount\": 160.99, \"amount_refunded\": 0.0, \"currency\": \"usd\", \"customer_id\": \"cus_6ed8d552f9\", \"description\": \"Training session\", \"id\": \"ch_137f1f98c4\", \"status\": \"succeeded\"}, \"status\": 201}",
+      "name": "create_charge",
+      "role": "tool",
+      "tool_call_id": "call_3"
+    },
+    {
+      "content": "Done.",
+      "role": "assistant"
+    }
+  ],
+  "min_turns": 4,
+  "mutation": {
+    "inner": {
+      "endpoint": "list_customers",
+      "oracle_value": "acct_main",
+      "param": {
+        "description": "Account to scope the request to. Use 'acct_main'.",
+        "enum": [
+          "acct_main"
+        ],
+        "fmt": null,
+        "items": null,
+        "maximum": null,
+        "minimum": null,
+        "name": "account_id",
+        "required": false,
+        "type": "string"
+      },
+      "type": "new_required_field"
+    },
+    "type": "error_schema_change"
+  },
+  "policy": "oracle_docs",
+  "reward": {
+    "invalid_penalty": 0.0,
+    "success": 1.0,
+    "total": 1.0,
+    "turn_penalty": 0.0
+  },
+  "schema_version": 1,
+  "seed": 0,
+  "state_changed": true,
+  "success": true,
+  "task": {
+    "domain": "payments",
+    "id": "payments.charge_customer.08",
+    "instruction": "Charge Ana Kowalski $160.99 for 'Training session'.",
+    "split": "test",
+    "template": "charge_customer"
+  },
+  "terminated": "final_answer",
+  "tools": [
+    {
+      "function": {
+        "description": "List customers, optionally filtered by exact email.",
+        "name": "list_customers",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "email": {
+              "description": "Exact email to match. Format: email address.",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Get one customer.",
+        "name": "get_customer",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "customer_id": {
+              "description": "Customer ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "customer_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Create a customer.",
+        "name": "create_customer",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "email": {
+              "description": "Email. Format: email address.",
+              "type": "string"
+            },
+            "name": {
+              "description": "Full name.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "email"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Charge a customer's card on file.",
+        "name": "create_charge",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "amount": {
+              "description": "Amount. Format: amount in dollars, up to 2 decimals.",
+              "type": "number"
+            },
+            "customer_id": {
+              "description": "Customer ID.",
+              "type": "string"
+            },
+            "description": {
+              "description": "Description shown on the receipt.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "customer_id",
+            "amount"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "List a customer's charges.",
+        "name": "list_charges",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "customer_id": {
+              "description": "Customer ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "customer_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Refund a charge, fully or partially.",
+        "name": "refund_charge",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "amount": {
+              "description": "Amount to refund; defaults to the full remaining amount. Format: amount in dollars, up to 2 decimals.",
+              "type": "number"
+            },
+            "charge_id": {
+              "description": "Charge ID.",
+              "type": "string"
+            },
+            "reason": {
+              "description": "Refund reason.",
+              "enum": [
+                "requested_by_customer",
+                "duplicate",
+                "fraudulent"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "charge_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Create an invoice for a customer.",
+        "name": "create_invoice",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "amount": {
+              "description": "Amount. Format: amount in dollars, up to 2 decimals.",
+              "type": "number"
+            },
+            "customer_id": {
+              "description": "Customer ID.",
+              "type": "string"
+            },
+            "due_date": {
+              "description": "Due date. Format: date as 'MM/DD/YYYY'.",
+              "type": "string"
+            },
+            "memo": {
+              "description": "Memo shown on the invoice.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "customer_id",
+            "amount",
+            "due_date"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "List a customer's invoices.",
+        "name": "list_invoices",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "customer_id": {
+              "description": "Customer ID.",
+              "type": "string"
+            },
+            "status": {
+              "description": "Filter by status.",
+              "enum": [
+                "open",
+                "paid",
+                "void"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "customer_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Void an open invoice.",
+        "name": "void_invoice",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "invoice_id": {
+              "description": "Invoice ID.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "invoice_id"
+          ],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    },
+    {
+      "function": {
+        "description": "Get the current documentation for an API endpoint: parameters, formats and return shape. Call with no arguments to list all endpoints.",
+        "name": "get_api_docs",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "description": "Endpoint name, e.g. 'create_event'.",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      "type": "function"
+    }
+  ],
+  "turns": 4
+}
