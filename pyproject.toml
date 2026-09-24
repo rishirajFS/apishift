@@ -8,6 +8,12 @@ dependencies = []
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6"]
+infra = [
+    "inspect-ai==0.3.268",
+    "matplotlib>=3.9",
+    "modal==1.5.5",
+    "openai>=2",
+]
 
 [build-system]
 requires = ["hatchling"]

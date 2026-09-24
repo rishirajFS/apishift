@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from apishift.agent.loop import MAX_TURNS, simulate
+from apishift.agent.loop import MAX_TURNS, EpisodeResult, asimulate, simulate
 from apishift.agent.scripted import OracleAgent
-from apishift.agent.types import Policy
+from apishift.agent.types import AsyncPolicy, Policy
 from apishift.envs.mutations import Spec
 from apishift.reward import compute_reward
 from apishift.tasks.model import Task
@@ -29,17 +29,30 @@ def min_turns_for(task: Task, spec: Spec, seed: int) -> int:
 
 def run_episode(task: Task, spec: Spec, policy: Policy, seed: int, max_turns: int = MAX_TURNS) -> dict[str, Any]:
     result = simulate(task, spec, policy, seed, max_turns)
+    return build_trace(task, spec, seed, policy.name, max_turns, result)
+
+
+async def arun_episode(
+    task: Task, spec: Spec, policy: AsyncPolicy, seed: int, max_turns: int = MAX_TURNS
+) -> dict[str, Any]:
+    result = await asimulate(task, spec, policy, seed, max_turns)
+    return build_trace(task, spec, seed, policy.name, max_turns, result)
+
+
+def build_trace(
+    task: Task, spec: Spec, seed: int, policy_name: str, max_turns: int, result: EpisodeResult
+) -> dict[str, Any]:
     min_turns = min_turns_for(task, spec, seed)
     reward = compute_reward(success=result.success, invalid_calls=result.invalid_calls,
                             turns=result.turns, min_turns=min_turns)
     return {
         "schema_version": TRACE_SCHEMA_VERSION,
-        "episode_id": episode_id(task, spec, seed, policy.name),
+        "episode_id": episode_id(task, spec, seed, policy_name),
         "task": {"id": task.id, "domain": task.domain, "template": task.template,
                  "split": task.split, "instruction": task.instruction},
         "mutation": spec.to_dict(),
         "seed": seed,
-        "policy": policy.name,
+        "policy": policy_name,
         "max_turns": max_turns,
         "tools": result.tools,
         "messages": result.messages,

@@ -35,3 +35,9 @@ class Policy(Protocol):
     name: str
 
     def act(self, messages: list[Message], tools: list[dict[str, Any]]) -> AssistantTurn: ...
+
+
+class AsyncPolicy(Protocol):
+    name: str
+
+    async def aact(self, messages: list[Message], tools: list[dict[str, Any]]) -> AssistantTurn: ...

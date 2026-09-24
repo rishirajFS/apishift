@@ -13,3 +13,4 @@ checkpoints/
 wandb/
 node_modules/
 .next/
+logs/
