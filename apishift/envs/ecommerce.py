@@ -158,7 +158,10 @@ def _restock_product(state, args, new_id):
     return put(state, "products", updated), 200, _product_view(updated)
 
 
-ORDER_ID = Param("order_id", "string", "Order ID.", required=True)
+ORDER_ID = Param("order_id", "string", "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
+                 required=True)
+PRODUCT_ID = Param("product_id", "string", "ID of the product, e.g. 'prod_91c2d4e6f8'. Find it with search_products.",
+                   required=True)
 ORDER_RETURNS = "Order object {id, customer_email, items: [{product_id, name, quantity}], status, " \
                 "shipping_address, coupon}."
 ADDRESS = Param("shipping_address", "string", "Shipping address.", required=True, fmt="address_string")
@@ -173,7 +176,7 @@ ENDPOINTS = (
         Param("query", "string", "Case-insensitive substring of the product name.", required=True),
         Param("category", "string", "Filter by category."),
     ), "Object {items: [Product {id, name, category, price, stock}]}.", _search_products),
-    Endpoint("get_product", "Get one product.", (Param("product_id", "string", "Product ID.", required=True),),
+    Endpoint("get_product", "Get one product.", (PRODUCT_ID,),
              "Product object.", _get_product),
     Endpoint("list_orders", "List a customer's orders.", (
         Param("customer_email", "string", "Customer email.", required=True, fmt="email"),
@@ -182,7 +185,8 @@ ENDPOINTS = (
     Endpoint("get_order", "Get one order.", (ORDER_ID,), ORDER_RETURNS, _get_order),
     Endpoint("create_order", "Place an order.", (
         Param("customer_email", "string", "Customer email.", required=True, fmt="email"),
-        Param("items", "array", "Line items.", required=True, items=LINE_ITEMS),
+        Param("items", "array", "Line items. Find product IDs with search_products.", required=True,
+              items=LINE_ITEMS),
         ADDRESS,
     ), ORDER_RETURNS, _create_order),
     Endpoint("cancel_order", "Cancel a pending order and restock its items.", (
@@ -195,12 +199,12 @@ ENDPOINTS = (
     ), ORDER_RETURNS, _apply_coupon),
     Endpoint("create_return", "Start a return for items of a delivered order.", (
         ORDER_ID,
-        Param("product_id", "string", "Product to return.", required=True),
+        Param("product_id", "string", "ID of the product to return (see the order's items).", required=True),
         Param("quantity", "integer", "Units to return.", required=True, minimum=1),
         Param("reason", "string", "Return reason.", required=True, enum=RETURN_REASONS),
     ), "Return object {id, order_id, product_id, quantity, reason, status}.", _create_return),
     Endpoint("restock_product", "Add units to a product's stock.", (
-        Param("product_id", "string", "Product ID.", required=True),
+        PRODUCT_ID,
         Param("quantity", "integer", "Units to add.", required=True, minimum=1),
     ), "Product object.", _restock_product),
 )

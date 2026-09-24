@@ -66,7 +66,7 @@
             "additionalProperties": false,
             "properties": {
               "attendees": {
-                "description": "Attendee email addresses.",
+                "description": "Attendee email addresses. Look up a contact's email with list_contacts.",
                 "items": {
                   "type": "string"
                 },
@@ -130,7 +130,7 @@
   "max_turns": 8,
   "messages": [
     {
-      "content": "You are an operations assistant with access to the calendar API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
+      "content": "You are an operations assistant with access to the calendar API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. Never guess resource IDs or email addresses: if the request does not give one, look it up with the API's list or search endpoints. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
       "role": "system"
     },
     {
@@ -172,7 +172,7 @@
       ]
     },
     {
-      "content": "{\"body\": {\"description\": \"Create a calendar event.\", \"endpoint\": \"create_event\", \"error_format\": \"Errors return {status, error: {type, code, message, param?, hint?}}.\", \"notes\": [\"Date-times are now ISO 8601 in UTC, e.g. 2026-10-01T14:00:00Z.\"], \"parameters\": {\"additionalProperties\": false, \"properties\": {\"attendees\": {\"description\": \"Attendee email addresses.\", \"items\": {\"type\": \"string\"}, \"type\": \"array\"}, \"end\": {\"description\": \"End time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.\", \"type\": \"string\"}, \"location\": {\"description\": \"Location.\", \"type\": \"string\"}, \"start\": {\"description\": \"Start time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.\", \"type\": \"string\"}, \"title\": {\"description\": \"Event title.\", \"type\": \"string\"}}, \"required\": [\"title\", \"start\", \"end\"], \"type\": \"object\"}, \"returns\": \"Event object {id, title, start, end, attendees, location, status}.\"}, \"status\": 200}",
+      "content": "{\"body\": {\"description\": \"Create a calendar event.\", \"endpoint\": \"create_event\", \"error_format\": \"Errors return {status, error: {type, code, message, param?, hint?}}.\", \"notes\": [\"Date-times are now ISO 8601 in UTC, e.g. 2026-10-01T14:00:00Z.\"], \"parameters\": {\"additionalProperties\": false, \"properties\": {\"attendees\": {\"description\": \"Attendee email addresses. Look up a contact's email with list_contacts.\", \"items\": {\"type\": \"string\"}, \"type\": \"array\"}, \"end\": {\"description\": \"End time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.\", \"type\": \"string\"}, \"location\": {\"description\": \"Location.\", \"type\": \"string\"}, \"start\": {\"description\": \"Start time. Format: ISO 8601 date-time in UTC, e.g. 'YYYY-MM-DDTHH:MM:SSZ'.\", \"type\": \"string\"}, \"title\": {\"description\": \"Event title.\", \"type\": \"string\"}}, \"required\": [\"title\", \"start\", \"end\"], \"type\": \"object\"}, \"returns\": \"Event object {id, title, start, end, attendees, location, status}.\"}, \"status\": 200}",
       "name": "get_api_docs",
       "role": "tool",
       "tool_call_id": "call_2"
@@ -261,7 +261,7 @@
           "additionalProperties": false,
           "properties": {
             "event_id": {
-              "description": "Event ID.",
+              "description": "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
               "type": "string"
             }
           },
@@ -281,7 +281,7 @@
           "additionalProperties": false,
           "properties": {
             "attendees": {
-              "description": "Attendee email addresses.",
+              "description": "Attendee email addresses. Look up a contact's email with list_contacts.",
               "items": {
                 "type": "string"
               },
@@ -326,7 +326,7 @@
               "type": "string"
             },
             "event_id": {
-              "description": "Event ID.",
+              "description": "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
               "type": "string"
             },
             "location": {
@@ -358,7 +358,7 @@
           "additionalProperties": false,
           "properties": {
             "event_id": {
-              "description": "Event ID.",
+              "description": "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
               "type": "string"
             }
           },
@@ -378,11 +378,11 @@
           "additionalProperties": false,
           "properties": {
             "email": {
-              "description": "Attendee email. Format: email address.",
+              "description": "Attendee email address (see list_contacts). Format: email address.",
               "type": "string"
             },
             "event_id": {
-              "description": "Event ID.",
+              "description": "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
               "type": "string"
             }
           },
@@ -403,11 +403,11 @@
           "additionalProperties": false,
           "properties": {
             "email": {
-              "description": "Attendee email. Format: email address.",
+              "description": "Attendee email address (see list_contacts). Format: email address.",
               "type": "string"
             },
             "event_id": {
-              "description": "Event ID.",
+              "description": "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
               "type": "string"
             }
           },
@@ -441,7 +441,7 @@
           "additionalProperties": false,
           "properties": {
             "event_id": {
-              "description": "Event ID.",
+              "description": "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
               "type": "string"
             },
             "minutes_before": {

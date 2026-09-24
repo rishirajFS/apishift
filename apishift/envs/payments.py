@@ -157,7 +157,8 @@ def _void_invoice(state, args, new_id):
     return put(state, "invoices", updated), 200, _invoice_view(updated)
 
 
-CUSTOMER_ID = Param("customer_id", "string", "Customer ID.", required=True)
+CUSTOMER_ID = Param("customer_id", "string", "ID of the customer, e.g. 'cus_4d2a9e71b3'. Find it with list_customers.",
+                    required=True)
 AMOUNT = Param("amount", "number", "Amount.", required=True, fmt="money_dollars")
 CHARGE_RETURNS = "Charge object {id, customer_id, amount, amount_refunded, currency, description, status}."
 INVOICE_RETURNS = "Invoice object {id, customer_id, amount, due_date, memo, status}."
@@ -177,7 +178,8 @@ ENDPOINTS = (
     Endpoint("list_charges", "List a customer's charges.", (CUSTOMER_ID,),
              "Object {items: [Charge]}.", _list_charges),
     Endpoint("refund_charge", "Refund a charge, fully or partially.", (
-        Param("charge_id", "string", "Charge ID.", required=True),
+        Param("charge_id", "string", "ID of the charge, e.g. 'ch_7e3b1a90c4'. Find it with list_charges.",
+              required=True),
         Param("amount", "number", "Amount to refund; defaults to the full remaining amount.",
               fmt="money_dollars"),
         Param("reason", "string", "Refund reason.",
@@ -192,7 +194,8 @@ ENDPOINTS = (
         CUSTOMER_ID, Param("status", "string", "Filter by status.", enum=("open", "paid", "void")),
     ), "Object {items: [Invoice]}.", _list_invoices),
     Endpoint("void_invoice", "Void an open invoice.", (
-        Param("invoice_id", "string", "Invoice ID.", required=True),
+        Param("invoice_id", "string", "ID of the invoice, e.g. 'in_2c8f5d1a6e'. Find it with list_invoices.",
+              required=True),
     ), INVOICE_RETURNS, _void_invoice),
 )
 

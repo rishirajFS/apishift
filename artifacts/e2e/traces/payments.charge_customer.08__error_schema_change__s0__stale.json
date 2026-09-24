@@ -26,7 +26,7 @@
   "max_turns": 8,
   "messages": [
     {
-      "content": "You are an operations assistant with access to the payments API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
+      "content": "You are an operations assistant with access to the payments API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. Never guess resource IDs or email addresses: if the request does not give one, look it up with the API's list or search endpoints. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
       "role": "system"
     },
     {
@@ -126,7 +126,7 @@
           "additionalProperties": false,
           "properties": {
             "customer_id": {
-              "description": "Customer ID.",
+              "description": "ID of the customer, e.g. 'cus_4d2a9e71b3'. Find it with list_customers.",
               "type": "string"
             }
           },
@@ -175,7 +175,7 @@
               "type": "number"
             },
             "customer_id": {
-              "description": "Customer ID.",
+              "description": "ID of the customer, e.g. 'cus_4d2a9e71b3'. Find it with list_customers.",
               "type": "string"
             },
             "description": {
@@ -200,7 +200,7 @@
           "additionalProperties": false,
           "properties": {
             "customer_id": {
-              "description": "Customer ID.",
+              "description": "ID of the customer, e.g. 'cus_4d2a9e71b3'. Find it with list_customers.",
               "type": "string"
             }
           },
@@ -224,7 +224,7 @@
               "type": "number"
             },
             "charge_id": {
-              "description": "Charge ID.",
+              "description": "ID of the charge, e.g. 'ch_7e3b1a90c4'. Find it with list_charges.",
               "type": "string"
             },
             "reason": {
@@ -257,7 +257,7 @@
               "type": "number"
             },
             "customer_id": {
-              "description": "Customer ID.",
+              "description": "ID of the customer, e.g. 'cus_4d2a9e71b3'. Find it with list_customers.",
               "type": "string"
             },
             "due_date": {
@@ -287,7 +287,7 @@
           "additionalProperties": false,
           "properties": {
             "customer_id": {
-              "description": "Customer ID.",
+              "description": "ID of the customer, e.g. 'cus_4d2a9e71b3'. Find it with list_customers.",
               "type": "string"
             },
             "status": {
@@ -316,7 +316,7 @@
           "additionalProperties": false,
           "properties": {
             "invoice_id": {
-              "description": "Invoice ID.",
+              "description": "ID of the invoice, e.g. 'in_2c8f5d1a6e'. Find it with list_invoices.",
               "type": "string"
             }
           },

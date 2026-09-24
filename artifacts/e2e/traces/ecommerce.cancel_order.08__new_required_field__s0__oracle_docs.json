@@ -122,7 +122,7 @@
                 "type": "boolean"
               },
               "order_id": {
-                "description": "Order ID.",
+                "description": "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
                 "type": "string"
               },
               "reason": {
@@ -178,7 +178,7 @@
   "max_turns": 8,
   "messages": [
     {
-      "content": "You are an operations assistant with access to the ecommerce API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
+      "content": "You are an operations assistant with access to the ecommerce API through tools. Complete the user's request by calling tools. Tool results are JSON with an HTTP-style status. Never guess resource IDs or email addresses: if the request does not give one, look it up with the API's list or search endpoints. If you are unsure how an endpoint works, call get_api_docs. When the request is complete, or you cannot make progress, reply with a short final answer and no tool calls.",
       "role": "system"
     },
     {
@@ -220,7 +220,7 @@
       ]
     },
     {
-      "content": "{\"body\": {\"description\": \"Cancel a pending order and restock its items.\", \"endpoint\": \"cancel_order\", \"error_format\": \"Errors return {status, error: {type, code, message, param?, hint?}}.\", \"parameters\": {\"additionalProperties\": false, \"properties\": {\"notify_customer\": {\"description\": \"Whether to email the customer about this change.\", \"type\": \"boolean\"}, \"order_id\": {\"description\": \"Order ID.\", \"type\": \"string\"}, \"reason\": {\"description\": \"Cancellation reason.\", \"type\": \"string\"}}, \"required\": [\"order_id\", \"notify_customer\"], \"type\": \"object\"}, \"returns\": \"Order object {id, customer_email, items: [{product_id, name, quantity}], status, shipping_address, coupon}.\"}, \"status\": 200}",
+      "content": "{\"body\": {\"description\": \"Cancel a pending order and restock its items.\", \"endpoint\": \"cancel_order\", \"error_format\": \"Errors return {status, error: {type, code, message, param?, hint?}}.\", \"parameters\": {\"additionalProperties\": false, \"properties\": {\"notify_customer\": {\"description\": \"Whether to email the customer about this change.\", \"type\": \"boolean\"}, \"order_id\": {\"description\": \"ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.\", \"type\": \"string\"}, \"reason\": {\"description\": \"Cancellation reason.\", \"type\": \"string\"}}, \"required\": [\"order_id\", \"notify_customer\"], \"type\": \"object\"}, \"returns\": \"Order object {id, customer_email, items: [{product_id, name, quantity}], status, shipping_address, coupon}.\"}, \"status\": 200}",
       "name": "get_api_docs",
       "role": "tool",
       "tool_call_id": "call_2"
@@ -319,7 +319,7 @@
           "additionalProperties": false,
           "properties": {
             "product_id": {
-              "description": "Product ID.",
+              "description": "ID of the product, e.g. 'prod_91c2d4e6f8'. Find it with search_products.",
               "type": "string"
             }
           },
@@ -369,7 +369,7 @@
           "additionalProperties": false,
           "properties": {
             "order_id": {
-              "description": "Order ID.",
+              "description": "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
               "type": "string"
             }
           },
@@ -393,7 +393,7 @@
               "type": "string"
             },
             "items": {
-              "description": "Line items.",
+              "description": "Line items. Find product IDs with search_products.",
               "items": {
                 "properties": {
                   "product_id": {
@@ -434,7 +434,7 @@
           "additionalProperties": false,
           "properties": {
             "order_id": {
-              "description": "Order ID.",
+              "description": "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
               "type": "string"
             },
             "reason": {
@@ -458,7 +458,7 @@
           "additionalProperties": false,
           "properties": {
             "order_id": {
-              "description": "Order ID.",
+              "description": "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
               "type": "string"
             },
             "shipping_address": {
@@ -487,7 +487,7 @@
               "type": "string"
             },
             "order_id": {
-              "description": "Order ID.",
+              "description": "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
               "type": "string"
             }
           },
@@ -508,11 +508,11 @@
           "additionalProperties": false,
           "properties": {
             "order_id": {
-              "description": "Order ID.",
+              "description": "ID of the order, e.g. 'ord_5b1e07c4a2'. Find it with list_orders.",
               "type": "string"
             },
             "product_id": {
-              "description": "Product to return.",
+              "description": "ID of the product to return (see the order's items).",
               "type": "string"
             },
             "quantity": {
@@ -549,7 +549,7 @@
           "additionalProperties": false,
           "properties": {
             "product_id": {
-              "description": "Product ID.",
+              "description": "ID of the product, e.g. 'prod_91c2d4e6f8'. Find it with search_products.",
               "type": "string"
             },
             "quantity": {

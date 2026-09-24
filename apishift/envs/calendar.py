@@ -114,7 +114,8 @@ def _create_reminder(state, args, new_id):
     return put(state, "reminders", reminder), 201, dict(reminder)
 
 
-EVENT_ID = Param("event_id", "string", "Event ID.", required=True)
+EVENT_ID = Param("event_id", "string", "ID of the event, e.g. 'evt_8f3a2c91d0'. Find it with list_events.",
+                 required=True)
 DT = "datetime_local"
 
 ENDPOINTS = (
@@ -127,7 +128,8 @@ ENDPOINTS = (
         Param("title", "string", "Event title.", required=True),
         Param("start", "string", "Start time.", required=True, fmt=DT),
         Param("end", "string", "End time.", required=True, fmt=DT),
-        Param("attendees", "array", "Attendee email addresses.", items={"type": "string"}),
+        Param("attendees", "array", "Attendee email addresses. Look up a contact's email with list_contacts.",
+              items={"type": "string"}),
         Param("location", "string", "Location."),
     ), EVENT_RETURNS, _create_event),
     Endpoint("update_event", "Update fields of an event.", (
@@ -139,10 +141,10 @@ ENDPOINTS = (
     ), EVENT_RETURNS, _update_event),
     Endpoint("cancel_event", "Cancel an event.", (EVENT_ID,), EVENT_RETURNS, _cancel_event),
     Endpoint("add_attendee", "Add an attendee to an event.", (
-        EVENT_ID, Param("email", "string", "Attendee email.", required=True, fmt="email"),
+        EVENT_ID, Param("email", "string", "Attendee email address (see list_contacts).", required=True, fmt="email"),
     ), EVENT_RETURNS, _add_attendee),
     Endpoint("remove_attendee", "Remove an attendee from an event.", (
-        EVENT_ID, Param("email", "string", "Attendee email.", required=True, fmt="email"),
+        EVENT_ID, Param("email", "string", "Attendee email address (see list_contacts).", required=True, fmt="email"),
     ), EVENT_RETURNS, _remove_attendee),
     Endpoint("list_contacts", "List the user's contacts.", (),
              "Object {items: [Contact {id, name, email}]}.", _list_contacts),
