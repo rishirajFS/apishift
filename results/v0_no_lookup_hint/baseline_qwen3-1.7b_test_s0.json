@@ -1,0 +1,102 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.9333,
+      "mean_reward": 0.0,
+      "mean_turns": 2.0,
+      "n": 30,
+      "success_rate": 0.0
+    },
+    "heldout": {
+      "invalid_call_rate": 0.9655,
+      "mean_reward": 0.0,
+      "mean_turns": 2.0,
+      "n": 58,
+      "success_rate": 0.0
+    },
+    "seen": {
+      "invalid_call_rate": 0.8152,
+      "mean_reward": 0.0,
+      "mean_turns": 2.7417,
+      "n": 120,
+      "success_rate": 0.0
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.9362,
+      "mean_reward": 0.0,
+      "mean_turns": 2.5333,
+      "n": 30,
+      "success_rate": 0.0
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 1.0,
+      "mean_reward": 0.0,
+      "mean_turns": 2.0,
+      "n": 30,
+      "success_rate": 0.0
+    },
+    "format_change": {
+      "invalid_call_rate": 0.8947,
+      "mean_reward": 0.0,
+      "mean_turns": 2.2667,
+      "n": 30,
+      "success_rate": 0.0
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.8103,
+      "mean_reward": 0.0,
+      "mean_turns": 2.9,
+      "n": 30,
+      "success_rate": 0.0
+    },
+    "none": {
+      "invalid_call_rate": 0.9333,
+      "mean_reward": 0.0,
+      "mean_turns": 2.0,
+      "n": 30,
+      "success_rate": 0.0
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.9286,
+      "mean_reward": 0.0,
+      "mean_turns": 2.0,
+      "n": 28,
+      "success_rate": 0.0
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.6912,
+      "mean_reward": 0.0,
+      "mean_turns": 3.2667,
+      "n": 30,
+      "success_rate": 0.0
+    }
+  },
+  "decoding": {
+    "enable_thinking": false,
+    "max_tokens": 1024,
+    "temperature": 0.0
+  },
+  "errors": [],
+  "eval_log": "2026-09-24T19-02-24-00-00_apishift-eval_EN3ehXgR2zX5sqALGka6Vp.eval",
+  "gpu": "L4",
+  "hf_repo": "Qwen/Qwen3-1.7B",
+  "model": "qwen3-1.7b",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.8562,
+    "mean_reward": 0.0,
+    "mean_turns": 2.4279,
+    "n": 208,
+    "success_rate": 0.0
+  },
+  "seed": 0,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 206,
+    "max_turns": 2
+  }
+}

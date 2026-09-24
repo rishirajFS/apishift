@@ -1,0 +1,4 @@
+date,job,modal_app,gpu,duration_s,est_cost_usd,actual_cost_usd,notes
+2026-09-24T14:57:15,baseline_qwen3-1.7b_test_s0,apishift-serve-qwen3-1-7b,L4,160,0.04,0.0308,failed at image build (Modal could not detect Python); no GPU container started
+2026-09-24T15:03:09,baseline_qwen3-1.7b_test_s0,apishift-serve-qwen3-1-7b,L4,323,0.08,0.0457,ready_after_s=235
+2026-09-24T15:11:04,baseline_qwen3-4b_test_s0,apishift-serve-qwen3-4b,L4,439,0.11,0.0945,ready_after_s=239
