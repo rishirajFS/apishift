@@ -26,10 +26,10 @@ OUT = RESULTS / "figures"
 
 # Fixed entity -> slot mapping; a missing model never repaints the others.
 SERIES = [
-    ("qwen3-1.7b", "Qwen3-1.7B (base)", "#2a78d6"),
-    ("qwen3-4b", "Qwen3-4B (base)", "#eb6834"),
-    ("qwen3-32b", "Qwen3-32B (reference)", "#1baf7a"),
-    ("qwen3-4b-thinking", "Qwen3-4B (base, thinking)", "#eda100"),
+    ("qwen3-4b", "Qwen3-4B, no thinking", "#2a78d6"),
+    ("qwen3-1.7b-thinking", "Qwen3-1.7B, thinking", "#eb6834"),
+    ("qwen3-4b-thinking", "Qwen3-4B, thinking", "#1baf7a"),
+    ("qwen3-32b-thinking", "Qwen3-32B, thinking (reference)", "#eda100"),
 ]
 GROUPS = [("control", "No change\n(control)"), ("seen", "Seen change types\n(train types)"),
           ("heldout", "Held-out change types\n(pagination, error schema)")]
@@ -55,13 +55,13 @@ def plot(rows: list[tuple[str, str, str, dict]]) -> Path:
     for i, (_, label, color, res) in enumerate(rows):
         xs = [g + (i - (n - 1) / 2) * width for g in range(len(GROUPS))]
         vals = [100 * (res["by_group"][g]["success_rate"] or 0) for g, _ in GROUPS]
-        ns = [res["by_group"][g]["n"] for g, _ in GROUPS]
         ax.bar(xs, vals, width=width - 0.02, color=color, label=label, edgecolor=SURFACE, linewidth=1)
-        for x, v, cnt in zip(xs, vals, ns, strict=True):
+        for x, v in zip(xs, vals, strict=True):
             ax.text(x, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8, color=INK)
-            ax.text(x, -4.5, f"n={cnt}", ha="center", va="top", fontsize=6.5, color=INK_2)
-    ax.set_xticks(range(len(GROUPS)), [g[1] for g in GROUPS], fontsize=9, color=INK)
-    ax.tick_params(axis="x", pad=14, length=0)
+    n_per_group = [rows[0][3]["by_group"][g]["n"] for g, _ in GROUPS]
+    tick_labels = [f"{label}\nn={n} episodes" for (_, label), n in zip(GROUPS, n_per_group, strict=True)]
+    ax.set_xticks(range(len(GROUPS)), tick_labels, fontsize=9, color=INK)
+    ax.tick_params(axis="x", pad=6, length=0)
     ax.set_ylim(0, 105)
     ax.set_ylabel("Task success rate (%)", fontsize=9, color=INK_2)
     ax.yaxis.grid(True, color=GRID, linewidth=0.8)
@@ -70,7 +70,7 @@ def plot(rows: list[tuple[str, str, str, dict]]) -> Path:
         ax.spines[side].set_visible(False)
     ax.spines["bottom"].set_color(GRID)
     ax.tick_params(axis="y", colors=INK_2, labelsize=8, length=0)
-    ax.set_title("APIShift test split: success when the API has silently changed",
+    ax.set_title("APIShift test split: success when the API has silently changed (seed 0)",
                  fontsize=11, color=INK, loc="left", pad=12)
     ax.legend(frameon=False, fontsize=8, loc="upper right", labelcolor=INK)
     fig.tight_layout()

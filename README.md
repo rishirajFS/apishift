@@ -67,3 +67,20 @@ invalid call (any error response), minus `0.02` per turn beyond the minimum,
 floored at `0`. The minimum is the turn count of a docs-first oracle under the
 episode's mutation, so the discovery step a mutation forces is never
 penalized.
+
+## Baselines (test split, seed 0)
+
+![success by group](results/figures/success_by_group.png)
+
+| Model | Control | Seen types | Held-out types | Mean reward |
+|-------|---------|------------|----------------|-------------|
+| Qwen3-4B, no thinking (greedy) | 17% | 12% | 3% | 0.10 |
+| Qwen3-1.7B, thinking (T=0.6) | 53% | 24% | 10% | 0.23 |
+| Qwen3-4B, thinking (T=0.6) | 87% | 79% | 43% | 0.66 |
+| Qwen3-32B-FP8, thinking (T=0.6) | 97% | 80% | 38% | 0.67 |
+
+Episodes per group: 30 control, 120 seen, 58 held-out. Served with vLLM 0.30
+on Modal, with tools sent as `strict: false`. Pagination is the hardest type
+for every model: 18-21% even with thinking. Superseded runs and why they are
+invalid: `results/v0_no_lookup_hint/`, `results/v1_strict_tools/`. Costs:
+`budget_log.csv`.
