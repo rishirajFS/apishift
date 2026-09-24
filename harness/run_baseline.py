@@ -73,25 +73,51 @@ def wait_ready(base_url: str, api_key: str, timeout_s: int) -> float:
     raise TimeoutError(f"server not ready after {timeout_s}s")
 
 
+def strict_tools_sent(log) -> list[str]:
+    """Names of tools sent with strict=true in any model request of an eval log."""
+    found = set()
+    for sample in log.samples or []:
+        for ev in sample.events:
+            call = getattr(ev, "call", None) if ev.event == "model" else None
+            for tool in (call.request.get("tools", []) if call else []):
+                if tool.get("function", {}).get("strict"):
+                    found.add(tool["function"]["name"])
+    return sorted(found)
+
+
+def decoding(thinking: bool) -> dict:
+    """Greedy for non-thinking; Qwen's recommended sampling for thinking mode (greedy loops)."""
+    if thinking:
+        return {"temperature": 0.6, "top_p": 0.95, "top_k": 20, "max_tokens": 4096, "enable_thinking": True}
+    return {"temperature": 0.0, "max_tokens": 1024, "enable_thinking": False}
+
+
 def run_eval(model_key: str, base_url: str, split: str, seed: int, max_connections: int,
-             limit_per_type: int | None):
+             limit_per_type: int | None, thinking: bool):
     from inspect_ai import eval as inspect_eval
 
     from harness.task import apishift_eval
 
+    dec = decoding(thinking)
+    policy_name = f"{model_key}-thinking" if thinking else model_key
     logs = inspect_eval(
-        apishift_eval(split=split, seed=seed, limit_per_type=limit_per_type, policy_name=model_key),
+        apishift_eval(split=split, seed=seed, limit_per_type=limit_per_type, policy_name=policy_name),
         model=f"openai-api/apishift/{model_key}",
         model_base_url=f"{base_url}/v1",
+        # Inspect defaults to strict tools; vLLM then grammar-constrains arguments to the STALE
+        # schema, which makes renamed params, new fields and new endpoints impossible to emit.
+        model_args={"strict_tools": False},
         max_connections=max_connections,
-        temperature=0.0,
-        max_tokens=1024,
+        temperature=dec["temperature"],
+        top_p=dec.get("top_p"),
+        top_k=dec.get("top_k"),
+        max_tokens=dec["max_tokens"],
         seed=seed,
-        extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        extra_body={"chat_template_kwargs": {"enable_thinking": dec["enable_thinking"]}},
         log_dir=str(LOGS),
         display="plain",
         fail_on_error=False,
-        tags=[model_key, split, "smoke" if limit_per_type else "full"],
+        tags=[policy_name, split, "smoke" if limit_per_type else "full"],
     )
     return logs[0]
 
@@ -103,6 +129,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--max-connections", type=int, default=32)
     parser.add_argument("--smoke-only", action="store_true")
+    parser.add_argument("--thinking", action="store_true", help="Qwen3 thinking mode (sampled decoding)")
     args = parser.parse_args()
 
     load_dotenv(REPO / ".env")
@@ -119,7 +146,8 @@ def main() -> None:
     from infra import modal_vllm as mv
 
     cfg = mv.MODELS[args.model]
-    run_name = f"baseline_{args.model}_{args.split}_s{args.seed}"
+    variant = f"{args.model}-thinking" if args.thinking else args.model
+    run_name = f"baseline_{variant}_{args.split}_s{args.seed}"
     t0 = time.time()
     notes = []
     summary = None
@@ -131,21 +159,27 @@ def main() -> None:
             print(f"server ready after {waited:.0f}s")
             notes.append(f"ready_after_s={waited:.0f}")
 
-            smoke_log = run_eval(args.model, url, args.split, args.seed, args.max_connections, limit_per_type=1)
-            smoke, smoke_traces = summarize(smoke_log, args.model)
+            smoke_log = run_eval(args.model, url, args.split, args.seed, args.max_connections,
+                                 limit_per_type=1, thinking=args.thinking)
+            smoke, smoke_traces = summarize(smoke_log, variant)
             n_calls = sum(len(t["calls"]) for t in smoke_traces)
             print("smoke:", json.dumps({"n_errors": smoke["n_errors"], "tool_calls": n_calls,
                                         "by_group": smoke["by_group"]}))
+            strict = strict_tools_sent(smoke_log)
+            if strict:
+                notes.append("aborted_strict_tools")
+                raise SystemExit(f"tools were sent with strict=true: {strict[:5]}")
             if smoke["n_errors"] or n_calls == 0:
                 notes.append("aborted_after_smoke")
                 raise SystemExit(f"smoke failed: errors={smoke['errors']} tool_calls={n_calls}")
             if args.smoke_only:
                 return
 
-            log = run_eval(args.model, url, args.split, args.seed, args.max_connections, limit_per_type=None)
-            summary, traces = summarize(log, args.model)
+            log = run_eval(args.model, url, args.split, args.seed, args.max_connections,
+                           limit_per_type=None, thinking=args.thinking)
+            summary, traces = summarize(log, variant)
             summary |= {"hf_repo": cfg.hf_repo, "gpu": cfg.gpu, "split": args.split, "seed": args.seed,
-                        "decoding": {"temperature": 0.0, "max_tokens": 1024, "enable_thinking": False}}
+                        "decoding": decoding(args.thinking), "vllm": mv.VLLM_VERSION}
             path = write_results(summary, traces, RESULTS, run_name)
             print("wrote", path)
     finally:

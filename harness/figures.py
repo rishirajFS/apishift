@@ -29,7 +29,7 @@ SERIES = [
     ("qwen3-1.7b", "Qwen3-1.7B (base)", "#2a78d6"),
     ("qwen3-4b", "Qwen3-4B (base)", "#eb6834"),
     ("qwen3-32b", "Qwen3-32B (reference)", "#1baf7a"),
-    ("qwen3-4b-grpo", "Qwen3-4B + GRPO", "#eda100"),
+    ("qwen3-4b-thinking", "Qwen3-4B (base, thinking)", "#eda100"),
 ]
 GROUPS = [("control", "No change\n(control)"), ("seen", "Seen change types\n(train types)"),
           ("heldout", "Held-out change types\n(pagination, error schema)")]

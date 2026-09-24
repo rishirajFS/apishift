@@ -98,6 +98,8 @@ def serve() -> None:
         "--max-num-seqs", str(CFG.max_num_seqs),
         "--gpu-memory-utilization", "0.90",
         "--enable-auto-tool-choice", "--tool-call-parser", "hermes",
+        # Keeps <think> content out of message text and tool-call parsing (no-op when thinking is off).
+        "--reasoning-parser", "qwen3",
         "--seed", "0",
     ]
     subprocess.Popen(cmd)
