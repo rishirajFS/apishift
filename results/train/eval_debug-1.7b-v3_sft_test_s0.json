@@ -1,0 +1,106 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.4667,
+      "mean_reward": 0.3817,
+      "mean_turns": 2.4667,
+      "n": 30,
+      "success_rate": 0.4
+    },
+    "heldout": {
+      "invalid_call_rate": 0.5253,
+      "mean_reward": 0.0672,
+      "mean_turns": 2.5517,
+      "n": 58,
+      "success_rate": 0.069
+    },
+    "seen": {
+      "invalid_call_rate": 0.6292,
+      "mean_reward": 0.2181,
+      "mean_turns": 3.85,
+      "n": 120,
+      "success_rate": 0.2417
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.5507,
+      "mean_reward": 0.2123,
+      "mean_turns": 3.1667,
+      "n": 30,
+      "success_rate": 0.2333
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 0.6866,
+      "mean_reward": 0.03,
+      "mean_turns": 3.0333,
+      "n": 30,
+      "success_rate": 0.0333
+    },
+    "format_change": {
+      "invalid_call_rate": 0.5604,
+      "mean_reward": 0.301,
+      "mean_turns": 3.7,
+      "n": 30,
+      "success_rate": 0.3333
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.6044,
+      "mean_reward": 0.273,
+      "mean_turns": 3.7667,
+      "n": 30,
+      "success_rate": 0.3
+    },
+    "none": {
+      "invalid_call_rate": 0.4667,
+      "mean_reward": 0.3817,
+      "mean_turns": 2.4667,
+      "n": 30,
+      "success_rate": 0.4
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.1875,
+      "mean_reward": 0.1071,
+      "mean_turns": 2.0357,
+      "n": 28,
+      "success_rate": 0.1071
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.7286,
+      "mean_reward": 0.086,
+      "mean_turns": 4.7667,
+      "n": 30,
+      "success_rate": 0.1
+    }
+  },
+  "decoding": {
+    "enable_thinking": true,
+    "max_tokens": 4096,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "errors": [],
+  "eval_log": "2026-09-25T12-55-05-00-00_apishift-eval_793EuRJr7fPPA9PtSuNGsy.eval",
+  "gpu": "L4",
+  "hf_repo": "Qwen/Qwen3-1.7B",
+  "lora": "sft-1.7b=/ckpt/art/apishift/models/debug-1.7b-v3/checkpoints/0001",
+  "model": "sft-1.7b-thinking",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.5927,
+    "mean_reward": 0.1996,
+    "mean_turns": 3.2885,
+    "n": 208,
+    "success_rate": 0.2163
+  },
+  "seed": 0,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 189,
+    "max_turns": 19
+  },
+  "vllm": "v0.30.0"
+}

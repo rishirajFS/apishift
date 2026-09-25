@@ -1,0 +1,140 @@
+{
+ "config": {
+  "run_name": "debug-1.7b-smoke",
+  "base_model": "Qwen/Qwen3-1.7B",
+  "seed": 0,
+  "sft_samples": 1,
+  "sft_keep_per_episode": 2,
+  "sft_lr": 5e-05,
+  "grpo_steps": 1,
+  "groups_per_step": 2,
+  "rollouts_per_group": 2,
+  "grpo_lr": 1e-05,
+  "max_tokens": 3072,
+  "concurrency": 96,
+  "lora_rank": 16,
+  "time_budget_s": 1800,
+  "art_path": "/ckpt/art",
+  "out_root": "/ckpt/runs",
+  "smoke": true
+ },
+ "val": {
+  "base": {
+   "n": 3,
+   "success": 1.0,
+   "reward": 0.9367,
+   "turns": 4.333,
+   "success_control": 1.0,
+   "success_seen": 1.0,
+   "errors": 0,
+   "step": 0
+  },
+  "sft": {
+   "n": 3,
+   "success": 0.6667,
+   "reward": 0.6033,
+   "turns": 4.0,
+   "success_control": 0.0,
+   "success_seen": 1.0,
+   "errors": 0,
+   "step": 1
+  },
+  "grpo": {
+   "n": 3,
+   "success": 0.3333,
+   "reward": 0.3167,
+   "turns": 4.667,
+   "success_control": 0.0,
+   "success_seen": 0.5,
+   "errors": 0,
+   "step": 2
+  }
+ },
+ "sft_data": {
+  "samples": 6,
+  "errors": 0,
+  "sample_success": 0.5,
+  "episodes_with_success": 2,
+  "episodes_total": 6,
+  "sft_examples": 7
+ },
+ "sft_step": 1,
+ "final_step": 2,
+ "model_dir": "/ckpt/art/apishift/models/debug-1.7b-smoke",
+ "checkpoints": [
+  "/ckpt/art/apishift/models/debug-1.7b-smoke/checkpoints/0000",
+  "/ckpt/art/apishift/models/debug-1.7b-smoke/checkpoints/0001",
+  "/ckpt/art/apishift/models/debug-1.7b-smoke/checkpoints/0002",
+  "/ckpt/art/apishift/models/debug-1.7b-v1/checkpoints/0000"
+ ],
+ "elapsed_s": 1127,
+ "metrics": [
+  {
+   "phase": "registered",
+   "elapsed_s": 490,
+   "step": 0
+  },
+  {
+   "phase": "val_base",
+   "elapsed_s": 589,
+   "n": 3,
+   "success": 1.0,
+   "reward": 0.9367,
+   "turns": 4.333,
+   "success_control": 1.0,
+   "success_seen": 1.0,
+   "errors": 0,
+   "step": 0
+  },
+  {
+   "phase": "sft_data",
+   "elapsed_s": 670,
+   "samples": 6,
+   "errors": 0,
+   "sample_success": 0.5,
+   "episodes_with_success": 2,
+   "episodes_total": 6,
+   "sft_examples": 7
+  },
+  {
+   "phase": "sft_done",
+   "elapsed_s": 698,
+   "step": 1
+  },
+  {
+   "phase": "val_sft",
+   "elapsed_s": 796,
+   "n": 3,
+   "success": 0.6667,
+   "reward": 0.6033,
+   "turns": 4.0,
+   "success_control": 0.0,
+   "success_seen": 1.0,
+   "errors": 0,
+   "step": 1
+  },
+  {
+   "phase": "grpo_step",
+   "elapsed_s": 947,
+   "step": 2,
+   "step_s": 150,
+   "reward": 0.4575,
+   "success": 0.5,
+   "informative_groups": 2,
+   "groups": 2,
+   "loss": null
+  },
+  {
+   "phase": "val_grpo",
+   "elapsed_s": 1127,
+   "n": 3,
+   "success": 0.3333,
+   "reward": 0.3167,
+   "turns": 4.667,
+   "success_control": 0.0,
+   "success_seen": 0.5,
+   "errors": 0,
+   "step": 2
+  }
+ ]
+}

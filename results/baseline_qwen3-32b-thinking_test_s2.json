@@ -1,0 +1,106 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.0,
+      "mean_reward": 0.9987,
+      "mean_turns": 3.3333,
+      "n": 30,
+      "success_rate": 1.0
+    },
+    "heldout": {
+      "invalid_call_rate": 0.2012,
+      "mean_reward": 0.4774,
+      "mean_turns": 3.8276,
+      "n": 58,
+      "success_rate": 0.5
+    },
+    "seen": {
+      "invalid_call_rate": 0.3099,
+      "mean_reward": 0.7453,
+      "mean_turns": 4.7833,
+      "n": 120,
+      "success_rate": 0.8083
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.3714,
+      "mean_reward": 0.5113,
+      "mean_turns": 4.5,
+      "n": 30,
+      "success_rate": 0.5667
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 0.2952,
+      "mean_reward": 0.5897,
+      "mean_turns": 4.5,
+      "n": 30,
+      "success_rate": 0.6333
+    },
+    "format_change": {
+      "invalid_call_rate": 0.3458,
+      "mean_reward": 0.9,
+      "mean_turns": 4.5667,
+      "n": 30,
+      "success_rate": 0.9667
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.2991,
+      "mean_reward": 0.702,
+      "mean_turns": 4.9,
+      "n": 30,
+      "success_rate": 0.7667
+    },
+    "none": {
+      "invalid_call_rate": 0.0,
+      "mean_reward": 0.9987,
+      "mean_turns": 3.3333,
+      "n": 30,
+      "success_rate": 1.0
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.0339,
+      "mean_reward": 0.3571,
+      "mean_turns": 3.1071,
+      "n": 28,
+      "success_rate": 0.3571
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.2381,
+      "mean_reward": 0.868,
+      "mean_turns": 5.1667,
+      "n": 30,
+      "success_rate": 0.9333
+    }
+  },
+  "decoding": {
+    "enable_thinking": true,
+    "max_tokens": 4096,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "errors": [],
+  "eval_log": "2026-09-25T10-19-09-00-00_apishift-eval_SRX6H2rytrCpRoETUevvkn.eval",
+  "gpu": "H100",
+  "hf_repo": "Qwen/Qwen3-32B-FP8",
+  "lora": null,
+  "model": "qwen3-32b-thinking",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.2525,
+    "mean_reward": 0.7072,
+    "mean_turns": 4.3077,
+    "n": 208,
+    "success_rate": 0.75
+  },
+  "seed": 2,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 208,
+    "max_turns": 0
+  },
+  "vllm": "v0.30.0"
+}

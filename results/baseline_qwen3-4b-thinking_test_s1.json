@@ -1,0 +1,106 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.0156,
+      "mean_reward": 0.8327,
+      "mean_turns": 3.0333,
+      "n": 30,
+      "success_rate": 0.8333
+    },
+    "heldout": {
+      "invalid_call_rate": 0.2662,
+      "mean_reward": 0.3379,
+      "mean_turns": 3.3621,
+      "n": 58,
+      "success_rate": 0.3621
+    },
+    "seen": {
+      "invalid_call_rate": 0.2924,
+      "mean_reward": 0.6538,
+      "mean_turns": 4.3083,
+      "n": 120,
+      "success_rate": 0.7
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.337,
+      "mean_reward": 0.6277,
+      "mean_turns": 4.0333,
+      "n": 30,
+      "success_rate": 0.6667
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 0.34,
+      "mean_reward": 0.458,
+      "mean_turns": 4.2667,
+      "n": 30,
+      "success_rate": 0.5
+    },
+    "format_change": {
+      "invalid_call_rate": 0.337,
+      "mean_reward": 0.659,
+      "mean_turns": 3.9,
+      "n": 30,
+      "success_rate": 0.7
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.2703,
+      "mean_reward": 0.6477,
+      "mean_turns": 4.6,
+      "n": 30,
+      "success_rate": 0.7
+    },
+    "none": {
+      "invalid_call_rate": 0.0156,
+      "mean_reward": 0.8327,
+      "mean_turns": 3.0333,
+      "n": 30,
+      "success_rate": 0.8333
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.0769,
+      "mean_reward": 0.2093,
+      "mean_turns": 2.3929,
+      "n": 28,
+      "success_rate": 0.2143
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.2411,
+      "mean_reward": 0.6807,
+      "mean_turns": 4.7,
+      "n": 30,
+      "success_rate": 0.7333
+    }
+  },
+  "decoding": {
+    "enable_thinking": true,
+    "max_tokens": 4096,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "errors": [],
+  "eval_log": "2026-09-25T09-34-11-00-00_apishift-eval_DLs28giQtFdH9d8QUjowzE.eval",
+  "gpu": "L4",
+  "hf_repo": "Qwen/Qwen3-4B",
+  "lora": null,
+  "model": "qwen3-4b-thinking",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.2574,
+    "mean_reward": 0.5915,
+    "mean_turns": 3.8606,
+    "n": 208,
+    "success_rate": 0.625
+  },
+  "seed": 1,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 208,
+    "max_turns": 0
+  },
+  "vllm": "v0.30.0"
+}

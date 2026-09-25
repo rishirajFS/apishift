@@ -10,3 +10,16 @@ date,job,modal_app,gpu,duration_s,est_cost_usd,actual_cost_usd,notes
 2026-09-24T16:35:28,baseline_qwen3-1.7b-thinking_test_s0,apishift-serve-qwen3-1-7b,L4,1180,0.29,0.2836,ready_after_s=203;strict_tools=false
 2026-09-24T17:01:42,baseline_qwen3-4b-thinking_test_s0,apishift-serve-qwen3-4b,L4,1572,0.38,0.3755,ready_after_s=206;strict_tools=false;4B actual split by duration
 2026-09-24T17:15:12,baseline_qwen3-32b-thinking_test_s0,apishift-serve-qwen3-32b,H100,808,0.98,0.7358,ready_after_s=428;strict_tools=false
+2026-09-25T01:54:20,eval_qwen3-4b-thinking_test_s1-2,apishift-serve-qwen3-4b,L4,11,0.0,0.0,"seeds=1,2;failed at app start: active Modal profile was rishin (secret missing); created 2 empty volumes + 1 stopped app in rishin; no compute"
+2026-09-25T02:09:27,prefetch_debug-1.7b-v1,apishift-train,CPU,361,0.02,0.0264,"image build + weights, no GPU"
+2026-09-25T02:10:30,eval_qwen3-4b-thinking_test_s1-2,apishift-serve-qwen3-4b,L4,0,0.0,0.0,"seeds=1,2;queued 15 min for a GPU (workspace busy: 10 containers of another job); stopped by me to relaunch with a longer queue wait; no GPU container started"
+2026-09-25T05:10:58,eval_qwen3-4b-thinking_test_s1-2,apishift-serve-qwen3-4b,L4,0,0.0,0.0170,"seeds=1,2;wall_s=10806;queued 3h, no GPU scheduled (workspace busy); actual = CPU weight download calls"
+2026-09-25T06:09:26,eval_qwen3-4b-thinking_test_s1-2,apishift-serve-qwen3-4b,L4,3161,0.77,0.5791,"seeds=1,2;ready_after_s=1149;wall_s=3417;actual from billing (hours 09-10 UTC)"
+2026-09-25T06:23:49,eval_qwen3-32b-thinking_test_s1-2,apishift-serve-qwen3-32b,H100,855,1.03,0.9396,"seeds=1,2;ready_after_s=318;wall_s=862;actual from billing"
+2026-09-25T06:27:58,train_debug-1.7b-v1,apishift-train,H100,248,0.3,0.2800,timeout_s=9000;error=RuntimeError;actual: share of apishift-train billing by duration x rate; vLLM V2-runner startup crash
+2026-09-25T06:49:11,train_debug-1.7b-smoke,apishift-train,L4,1181,0.29,0.2700,timeout_s=2400;actual: share of apishift-train billing; L4 smoke run
+2026-09-25T07:30:55,train_debug-1.7b-v2,apishift-train,H100,2448,2.95,2.7900,timeout_s=9000;actual: share of apishift-train billing; GRPO collapsed at lr 1e-5
+2026-09-25T07:52:39,eval_sft-1.7b-thinking_test_s0,apishift-serve-qwen3-1-7b-lora,L4,1296,0.32,0.3155,seeds=0;ready_after_s=264;wall_s=1303;actual from billing
+2026-09-25T08:49:02,train_debug-1.7b-v3,apishift-train,H100,3355,4.05,3.8300,timeout_s=5400;actual: share of apishift-train billing
+2026-09-25T09:12:00,eval_sft-1.7b-thinking_test_s0,apishift-serve-qwen3-1-7b-lora,L4,1371,0.34,,"seeds=0;ready_after_s=224;wall_s=1377;billing not settled yet, estimate counted"
+2026-09-25T09:25:11,eval_grpo-1.7b-thinking_test_s0,apishift-serve-qwen3-1-7b-lora,L4,785,0.19,,"seeds=0;ready_after_s=263;wall_s=790;billing not settled yet, estimate counted"
