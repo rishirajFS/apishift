@@ -19,9 +19,12 @@ class ToolCall:
 class AssistantTurn:
     content: str
     tool_calls: tuple[ToolCall, ...] = ()
+    reasoning: str = ""  # thinking-mode text; kept in traces for SFT, never sent back to the model
 
     def to_message(self) -> Message:
         msg: Message = {"role": "assistant", "content": self.content}
+        if self.reasoning:
+            msg["reasoning_content"] = self.reasoning
         if self.tool_calls:
             msg["tool_calls"] = [
                 {"id": tc.id, "type": "function",

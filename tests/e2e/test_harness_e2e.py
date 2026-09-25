@@ -54,6 +54,22 @@ def test_unparsed_tool_call_text_counts_as_invalid_call(tmp_path):
     assert trace["final_answer"] == "Giving up."
 
 
+def test_reasoning_is_kept_in_trace_but_not_sent_back(tmp_path):
+    from inspect_ai.model import ChatMessageAssistant, ContentReasoning, ContentText
+    from inspect_ai.model._model_output import ChatCompletionChoice
+
+    thought = ChatMessageAssistant(content=[ContentReasoning(reasoning="I should list contacts first."),
+                                            ContentText(text="Done.")])
+    outputs = [ModelOutput(model="mockllm/model", choices=[ChatCompletionChoice(message=thought)])]
+    model = get_model("mockllm/model", custom_outputs=outputs)
+    [log] = inspect_eval(apishift_eval(split="test", seed=0, types="none", limit_per_type=1),
+                         model=model, log_dir=str(tmp_path / "logs"), display="none")
+    _, [trace] = summarize(log, "mock")
+    final = trace["messages"][-1]
+    assert final["reasoning_content"] == "I should list contacts first."
+    assert final["content"] == "Done."
+
+
 def test_dataset_groups_and_heldout_only_in_test():
     test_ds = apishift_eval(split="test", seed=0).dataset
     groups = {s.metadata["group"] for s in test_ds}

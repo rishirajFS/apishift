@@ -42,9 +42,13 @@ SCALEDOWN_S = 120
 
 MODEL_KEY = os.environ.get("APISHIFT_MODEL", "qwen3-1.7b")
 CFG = MODELS[MODEL_KEY]
+# Optional LoRA adapter "name=/ckpt/<dir>", served next to the base model.
+LORA = os.environ.get("APISHIFT_LORA")
+CKPT = "/ckpt"
 
-app = modal.App(f"apishift-serve-{MODEL_KEY.replace('.', '-')}")
+app = modal.App(f"apishift-serve-{MODEL_KEY.replace('.', '-')}" + ("-lora" if LORA else ""))
 volume = modal.Volume.from_name("apishift-hf-cache", create_if_missing=True)
+ckpt_volume = modal.Volume.from_name("apishift-checkpoints", create_if_missing=True)
 
 vllm_image = (
     modal.Image.from_registry(f"vllm/vllm-openai:{VLLM_VERSION}")
@@ -58,7 +62,7 @@ download_image = (
     .uv_pip_install("huggingface_hub==2.0.0")
     .env({"HF_HOME": f"{CACHE}/hf"})
 )
-model_secret = modal.Secret.from_dict({"APISHIFT_MODEL": MODEL_KEY})
+model_secret = modal.Secret.from_dict({"APISHIFT_MODEL": MODEL_KEY, **({"APISHIFT_LORA": LORA} if LORA else {})})
 
 
 def weights_dir(repo: str) -> str:
@@ -80,7 +84,7 @@ def download_weights() -> str:
 @app.function(
     image=vllm_image,
     gpu=CFG.gpu,
-    volumes={CACHE: volume},
+    volumes={CACHE: volume, CKPT: ckpt_volume},
     secrets=[model_secret, modal.Secret.from_name("apishift-vllm")],
     timeout=SERVER_TIMEOUT_S,
     max_containers=1,
@@ -102,4 +106,6 @@ def serve() -> None:
         "--reasoning-parser", "qwen3",
         "--seed", "0",
     ]
+    if LORA:
+        cmd += ["--enable-lora", "--max-lora-rank", "32", "--lora-modules", LORA]
     subprocess.Popen(cmd)

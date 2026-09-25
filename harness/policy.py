@@ -11,6 +11,7 @@ from inspect_ai.model import (
     ChatMessageSystem,
     ChatMessageTool,
     ChatMessageUser,
+    ContentReasoning,
     Model,
 )
 from inspect_ai.tool import ToolCall as InspectToolCall
@@ -83,4 +84,6 @@ class InspectPolicy:
             # The server's tool parser rejected a malformed call and returned it as text.
             # Count it as an invalid call (malformed_arguments) instead of a final answer.
             calls = (ToolCall(id=f"malformed_{len(messages)}", name=MALFORMED_TOOL, arguments=UNPARSEABLE),)
-        return AssistantTurn(content=text, tool_calls=calls)
+        reasoning = "\n".join(c.reasoning for c in msg.content if isinstance(c, ContentReasoning)) \
+            if isinstance(msg.content, list) else ""
+        return AssistantTurn(content=text, tool_calls=calls, reasoning=reasoning)
