@@ -41,13 +41,14 @@ class Episode:
     over this for sync (scripted) and async (model-backed) policies.
     """
 
-    def __init__(self, task: Task, spec: Spec, seed: int, max_turns: int = MAX_TURNS) -> None:
+    def __init__(self, task: Task, spec: Spec, seed: int, max_turns: int = MAX_TURNS,
+                 prompt_variant: str = "default") -> None:
         self.task = task
         self.max_turns = max_turns
         self.env = LiveEnv(DOMAINS[task.domain], task.initial_state, spec, seed)
         self.tools = self.env.stale_tools()
         self.messages: list[Message] = [
-            {"role": "system", "content": system_prompt(task.domain)},
+            {"role": "system", "content": system_prompt(task.domain, prompt_variant)},
             {"role": "user", "content": task.instruction},
         ]
         self.calls: list[dict[str, Any]] = []
@@ -90,17 +91,19 @@ class Episode:
         )
 
 
-def simulate(task: Task, spec: Spec, policy: Policy, seed: int, max_turns: int = MAX_TURNS) -> EpisodeResult:
-    ep = Episode(task, spec, seed, max_turns)
+def simulate(task: Task, spec: Spec, policy: Policy, seed: int, max_turns: int = MAX_TURNS,
+             prompt_variant: str = "default") -> EpisodeResult:
+    ep = Episode(task, spec, seed, max_turns, prompt_variant)
     while not ep.done:
         ep.step(policy.act(list(ep.messages), ep.tools))
     return ep.result()
 
 
 async def asimulate(
-    task: Task, spec: Spec, policy: AsyncPolicy, seed: int, max_turns: int = MAX_TURNS
+    task: Task, spec: Spec, policy: AsyncPolicy, seed: int, max_turns: int = MAX_TURNS,
+    prompt_variant: str = "default",
 ) -> EpisodeResult:
-    ep = Episode(task, spec, seed, max_turns)
+    ep = Episode(task, spec, seed, max_turns, prompt_variant)
     while not ep.done:
         ep.step(await policy.aact(list(ep.messages), ep.tools))
     return ep.result()

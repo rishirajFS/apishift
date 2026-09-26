@@ -49,6 +49,8 @@ class PipelineConfig:
     out_root: str = "/ckpt/runs"
     # smoke: exercise every phase on a handful of episodes (cheap GPU check before a real run)
     smoke: bool = False
+    # skip_sft: GRPO straight from the base model (self-SFT did not help on 1.7B, v2 and v3)
+    skip_sft: bool = False
 
 
 class Run:
@@ -215,9 +217,12 @@ async def run_pipeline(cfg: PipelineConfig) -> dict[str, Any]:
         await model.register(backend)
         run.log("registered", step=await model.get_step())
         base = await val_eval(run, model, "base")
-        sft_stats = await sft_phase(run, model)
-        sft_step = await model.get_step()
-        sft = await val_eval(run, model, "sft")
+        if cfg.skip_sft:
+            sft_stats, sft_step, sft = {"skipped": True}, await model.get_step(), base
+        else:
+            sft_stats = await sft_phase(run, model)
+            sft_step = await model.get_step()
+            sft = await val_eval(run, model, "sft")
         grpo_info = await grpo_phase(run, model, backend, sft.get("success", 0.0))
         grpo = await val_eval(run, model, "grpo")
         summary = {"config": asdict(cfg), "val": {"base": base, "sft": sft, "grpo": grpo}, "sft_data": sft_stats,

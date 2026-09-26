@@ -47,14 +47,52 @@ def prefetch(repo: str) -> str:
     return path
 
 
+def _write_job_record(run_name: str, record: dict) -> None:
+    import json
+    from pathlib import Path
+
+    path = Path(CKPT) / "jobs" / f"{run_name}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    old = json.loads(path.read_text()) if path.exists() else {}
+    path.write_text(json.dumps({**old, **record}, indent=1))
+    ckpt_volume.commit()
+
+
 @app.function(image=image, gpu=GPU, volumes={CACHE: hf_volume, CKPT: ckpt_volume},
               timeout=TIMEOUT_S, max_containers=1)
 def train(cfg: dict) -> dict:
+    """GPU container: the whole pipeline. Records its own start/end so GPU time is known."""
     import asyncio
+    import time
 
     from train.pipeline import PipelineConfig, run_pipeline
 
+    started = time.time()
+    _write_job_record(cfg["run_name"], {"gpu": GPU, "gpu_started": started, "status": "running"})
+    status = "failed"
     try:
-        return asyncio.run(run_pipeline(PipelineConfig(**cfg)))
+        summary = asyncio.run(run_pipeline(PipelineConfig(**cfg)))
+        status = "done"
+        return summary
     finally:
-        ckpt_volume.commit()
+        ended = time.time()
+        _write_job_record(cfg["run_name"], {"gpu_ended": ended, "gpu_seconds": round(ended - started),
+                                            "est_gpu_usd": round((ended - started) / 3600 * GPU_USD_PER_HOUR, 2),
+                                            "status": status})
+
+
+ORCH_TIMEOUT_S = TIMEOUT_S + 3 * 3600 + 1800  # train cap + up to 3 h waiting for a GPU + prefetch
+
+
+@app.function(image=image, cpu=1, memory=2048, volumes={CKPT: ckpt_volume},
+              timeout=ORCH_TIMEOUT_S, max_containers=1)
+def train_job(cfg: dict) -> dict:
+    """Detached entry point: prefetch weights on CPU, then run the GPU pipeline. Lives on Modal only."""
+    import time
+
+    _write_job_record(cfg["run_name"], {"launched": time.time(), "config": cfg, "status": "prefetching"})
+    prefetch.remote(cfg["base_model"])
+    summary = train.remote(cfg)
+    _write_job_record(cfg["run_name"], {"finished": time.time(), "best_step": summary.get("best_step"),
+                                        "val": summary.get("val")})
+    return summary

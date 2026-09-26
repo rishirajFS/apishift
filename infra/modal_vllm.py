@@ -109,3 +109,25 @@ def serve() -> None:
     if LORA:
         cmd += ["--enable-lora", "--max-lora-rank", "32", "--lora-modules", LORA]
     subprocess.Popen(cmd)
+
+
+# --- Detached eval job: Inspect runs on Modal against `serve`, results go to the checkpoints Volume ---
+
+EVAL_JOB_TIMEOUT_S = int(os.environ.get("APISHIFT_EVAL_JOB_TIMEOUT_S", str(4 * 3600 + 2 * 3600)))
+
+eval_image = (
+    modal.Image.debian_slim(python_version="3.12")
+    .uv_pip_install("inspect-ai==0.3.268", "openai>=2,<3")
+    .add_local_python_source("apishift", "harness", "infra")
+)
+
+
+@app.function(image=eval_image, cpu=1, memory=2048, volumes={CKPT: ckpt_volume},
+              secrets=[model_secret, modal.Secret.from_name("apishift-vllm")],
+              timeout=EVAL_JOB_TIMEOUT_S, max_containers=1)
+def eval_job(job: dict) -> dict:
+    """Detached entry point: weights on CPU, then smoke gate + seeds against the vLLM server."""
+    from harness.remote_eval import run_job
+
+    download_weights.remote()
+    return run_job(job, serve.get_web_url(), CKPT, CFG.usd_per_hour, ckpt_volume.commit)

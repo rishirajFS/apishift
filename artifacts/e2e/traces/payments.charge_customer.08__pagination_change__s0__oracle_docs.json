@@ -244,6 +244,7 @@
     "type": "pagination_change"
   },
   "policy": "oracle_docs",
+  "prompt_variant": "default",
   "reward": {
     "invalid_penalty": 0.0,
     "success": 1.0,

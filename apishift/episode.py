@@ -27,20 +27,23 @@ def min_turns_for(task: Task, spec: Spec, seed: int) -> int:
     return result.turns
 
 
-def run_episode(task: Task, spec: Spec, policy: Policy, seed: int, max_turns: int = MAX_TURNS) -> dict[str, Any]:
-    result = simulate(task, spec, policy, seed, max_turns)
-    return build_trace(task, spec, seed, policy.name, max_turns, result)
+def run_episode(task: Task, spec: Spec, policy: Policy, seed: int, max_turns: int = MAX_TURNS,
+                prompt_variant: str = "default") -> dict[str, Any]:
+    result = simulate(task, spec, policy, seed, max_turns, prompt_variant)
+    return build_trace(task, spec, seed, policy.name, max_turns, result, prompt_variant)
 
 
 async def arun_episode(
-    task: Task, spec: Spec, policy: AsyncPolicy, seed: int, max_turns: int = MAX_TURNS
+    task: Task, spec: Spec, policy: AsyncPolicy, seed: int, max_turns: int = MAX_TURNS,
+    prompt_variant: str = "default",
 ) -> dict[str, Any]:
-    result = await asimulate(task, spec, policy, seed, max_turns)
-    return build_trace(task, spec, seed, policy.name, max_turns, result)
+    result = await asimulate(task, spec, policy, seed, max_turns, prompt_variant)
+    return build_trace(task, spec, seed, policy.name, max_turns, result, prompt_variant)
 
 
 def build_trace(
-    task: Task, spec: Spec, seed: int, policy_name: str, max_turns: int, result: EpisodeResult
+    task: Task, spec: Spec, seed: int, policy_name: str, max_turns: int, result: EpisodeResult,
+    prompt_variant: str = "default",
 ) -> dict[str, Any]:
     min_turns = min_turns_for(task, spec, seed)
     reward = compute_reward(success=result.success, invalid_calls=result.invalid_calls,
@@ -53,6 +56,7 @@ def build_trace(
         "mutation": spec.to_dict(),
         "seed": seed,
         "policy": policy_name,
+        "prompt_variant": prompt_variant,
         "max_turns": max_turns,
         "tools": result.tools,
         "messages": result.messages,

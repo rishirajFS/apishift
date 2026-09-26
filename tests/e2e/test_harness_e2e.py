@@ -70,6 +70,31 @@ def test_reasoning_is_kept_in_trace_but_not_sent_back(tmp_path):
     assert final["content"] == "Done."
 
 
+def test_recovery_prompt_variant_reaches_model_and_trace(tmp_path):
+    from apishift.agent.prompts import PROMPT_VARIANTS
+
+    model = get_model("mockllm/model", custom_outputs=[ModelOutput.from_content("mockllm/model", "ok")])
+    [log] = inspect_eval(apishift_eval(split="test", seed=0, types="none", limit_per_type=1,
+                                       prompt_variant="recovery"),
+                         model=model, log_dir=str(tmp_path / "logs"), display="none")
+    _, [trace] = summarize(log, "mock")
+    system = trace["messages"][0]["content"]
+    assert trace["prompt_variant"] == "recovery"
+    assert "get_api_docs" in system and "may have changed" in system
+    # held-out change types must not be hinted at in the prompt
+    assert "pagination" not in system.lower() and "cursor" not in system.lower()
+    assert PROMPT_VARIANTS["default"] != PROMPT_VARIANTS["recovery"]
+
+
+def test_default_prompt_is_unchanged_and_recorded(tmp_path):
+    model = get_model("mockllm/model", custom_outputs=[ModelOutput.from_content("mockllm/model", "ok")])
+    [log] = inspect_eval(apishift_eval(split="test", seed=0, types="none", limit_per_type=1),
+                         model=model, log_dir=str(tmp_path / "logs"), display="none")
+    _, [trace] = summarize(log, "mock")
+    assert trace["prompt_variant"] == "default"
+    assert "may have changed" not in trace["messages"][0]["content"]
+
+
 def test_dataset_groups_and_heldout_only_in_test():
     test_ds = apishift_eval(split="test", seed=0).dataset
     groups = {s.metadata["group"] for s in test_ds}

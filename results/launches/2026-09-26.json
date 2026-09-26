@@ -1,0 +1,43 @@
+{
+ "pilot": {
+  "call_id": "fc-01M3FWN69VZ6Y41NR7B03EBHB1",
+  "app": "apishift-train",
+  "spec": {
+   "run_name": "grpo-4b-pilot-v1",
+   "base_model": "Qwen/Qwen3-4B",
+   "skip_sft": true,
+   "grpo_steps": 20,
+   "groups_per_step": 8,
+   "rollouts_per_group": 6,
+   "grpo_lr": 3e-06,
+   "val_every": 5,
+   "time_budget_s": 6300
+  },
+  "planned_gpu_usd": 8.33,
+  "planned_cpu_usd": 0.34
+ },
+ "prompt_baseline": {
+  "call_id": "fc-01M3FWNQSMETBXX1VCPC70W1FD",
+  "app": "apishift-serve-qwen3-4b",
+  "spec": {
+   "name": "prompt-recovery-4b-v1",
+   "model": "qwen3-4b",
+   "served": "qwen3-4b",
+   "variant": "qwen3-4b-thinking-recovery",
+   "split": "test",
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "thinking": true,
+   "prompt_variant": "recovery",
+   "max_connections": 48,
+   "queue_timeout_s": 10800,
+   "max_eval_s": 3600,
+   "sample_time_limit_s": 900
+  },
+  "planned_gpu_usd": 1.54,
+  "planned_cpu_usd": 0.32
+ }
+}

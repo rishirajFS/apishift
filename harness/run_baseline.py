@@ -80,14 +80,16 @@ def decoding(thinking: bool) -> dict:
 
 
 def run_eval(served_name: str, policy_name: str, base_url: str, split: str, seed: int, max_connections: int,
-             limit_per_type: int | None, thinking: bool):
+             limit_per_type: int | None, thinking: bool, log_dir: Path = LOGS, prompt_variant: str = "default",
+             sample_time_limit_s: int | None = None):
     from inspect_ai import eval as inspect_eval
 
     from harness.task import apishift_eval
 
     dec = decoding(thinking)
     logs = inspect_eval(
-        apishift_eval(split=split, seed=seed, limit_per_type=limit_per_type, policy_name=policy_name),
+        apishift_eval(split=split, seed=seed, limit_per_type=limit_per_type, policy_name=policy_name,
+                      prompt_variant=prompt_variant),
         model=f"openai-api/apishift/{served_name}",
         model_base_url=f"{base_url}/v1",
         # Inspect defaults to strict tools; vLLM then grammar-constrains arguments to the STALE
@@ -100,7 +102,8 @@ def run_eval(served_name: str, policy_name: str, base_url: str, split: str, seed
         max_tokens=dec["max_tokens"],
         seed=seed,
         extra_body={"chat_template_kwargs": {"enable_thinking": dec["enable_thinking"]}},
-        log_dir=str(LOGS),
+        log_dir=str(log_dir),
+        time_limit=sample_time_limit_s,
         display="plain",
         fail_on_error=False,
         tags=[policy_name, split, f"s{seed}", "smoke" if limit_per_type else "full"],

@@ -1,0 +1,17 @@
+{
+ "launched": 1790460996.3221018,
+ "config": {
+  "run_name": "grpo-4b-pilot-v1",
+  "base_model": "Qwen/Qwen3-4B",
+  "skip_sft": true,
+  "grpo_steps": 20,
+  "groups_per_step": 8,
+  "rollouts_per_group": 6,
+  "grpo_lr": 3e-06,
+  "val_every": 5,
+  "time_budget_s": 6300
+ },
+ "status": "running",
+ "gpu": "H100",
+ "gpu_started": 1790461033.8263175
+}

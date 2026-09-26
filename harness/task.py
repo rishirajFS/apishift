@@ -50,14 +50,15 @@ def build_dataset(split: str, seed: int, types: tuple[str, ...] | None = None,
 
 
 @solver
-def apishift_agent(policy_name: str = "model"):
+def apishift_agent(policy_name: str = "model", prompt_variant: str = "default"):
     async def solve(state: TaskState, generate: Generate) -> TaskState:
         meta = state.metadata
         t = get_task(meta["task_id"])
         spec = sample_mutation(t, meta["mutation_type"], meta["seed"])
         if spec is None:
             raise RuntimeError(f"no applicable mutation for {state.sample_id}")
-        trace = await arun_episode(t, spec, InspectPolicy(get_model(), policy_name), meta["seed"])
+        trace = await arun_episode(t, spec, InspectPolicy(get_model(), policy_name), meta["seed"],
+                                   prompt_variant=prompt_variant)
         state.store.set("trace", trace)
         state.messages = to_inspect_messages(trace["messages"])
         state.completed = True
@@ -83,10 +84,11 @@ def apishift_scorer():
 
 @task
 def apishift_eval(split: str = "test", seed: int = 0, types: str | None = None,
-                  limit_per_type: int | None = None, policy_name: str = "model") -> Task:
+                  limit_per_type: int | None = None, policy_name: str = "model",
+                  prompt_variant: str = "default") -> Task:
     type_filter = tuple(types.split(",")) if types else None
     return Task(
         dataset=build_dataset(split, seed, type_filter, limit_per_type),
-        solver=apishift_agent(policy_name),
+        solver=apishift_agent(policy_name, prompt_variant),
         scorer=apishift_scorer(),
     )

@@ -72,6 +72,7 @@
     "type": "pagination_change"
   },
   "policy": "stale",
+  "prompt_variant": "default",
   "reward": {
     "invalid_penalty": 0.0,
     "success": 0.0,
