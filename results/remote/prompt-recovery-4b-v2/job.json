@@ -1,0 +1,23 @@
+{
+ "job": {
+  "name": "prompt-recovery-4b-v2",
+  "model": "qwen3-4b",
+  "served": "qwen3-4b",
+  "variant": "qwen3-4b-thinking-recovery",
+  "split": "test",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "thinking": true,
+  "prompt_variant": "recovery",
+  "max_connections": 48,
+  "queue_timeout_s": 10800,
+  "max_eval_s": 3600,
+  "sample_time_limit_s": 900
+ },
+ "launched": 1790478392.5932798,
+ "status": "running",
+ "ready_after_s": 214
+}

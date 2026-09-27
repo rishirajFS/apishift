@@ -51,6 +51,15 @@ class PipelineConfig:
     smoke: bool = False
     # skip_sft: GRPO straight from the base model (self-SFT did not help on 1.7B, v2 and v3)
     skip_sft: bool = False
+    # pool_scan: before GRPO, sample each train episode `scan_samples` times with the starting
+    # policy and train only on adaptation-hard episodes (train/pool.py). The 4B pilot (unfiltered)
+    # had too few groups with reward variance because base 4B already solves most train episodes.
+    pool_scan: bool = False
+    scan_samples: int = 4
+    pool_lo: float = 0.1
+    pool_hi: float = 0.9
+    control_min: float = 0.5
+    min_pool: int = 24
 
 
 class Run:
@@ -147,13 +156,37 @@ async def sft_phase(run: Run, model) -> dict[str, Any]:
     return stats
 
 
-async def grpo_phase(run: Run, model, backend, sft_val: float) -> dict[str, Any]:
+async def scan_phase(run: Run, model) -> list[tuple[Any, Any]]:
+    """Sample every train episode k times; return the adaptation-hard (task, spec) pool."""
+    from train.pool import select_pool
+
+    cfg = run.cfg
+    pairs = episodes("train", cfg.seed)
+    jobs = [run.one(model, t, s, "scan") for t, s in pairs for _ in range(cfg.scan_samples)]
+    results = await asyncio.gather(*jobs, return_exceptions=True)
+    traces = [r[1] for r in results if not isinstance(r, BaseException)]
+    run.save_traces("scan", traces)
+    pool = select_pool(traces, lo=cfg.pool_lo, hi=cfg.pool_hi, control_min=cfg.control_min,
+                       min_size=cfg.min_pool)
+    (run.out / "pool.json").write_text(json.dumps(pool, indent=1))
+    by_type: dict[str, int] = {}
+    for p in pool:
+        by_type[p["mutation_type"]] = by_type.get(p["mutation_type"], 0) + 1
+    run.log("pool", size=len(pool), by_type=by_type, scanned=len(traces), errors=len(results) - len(traces),
+            scan_success=round(sum(t["success"] for t in traces) / max(len(traces), 1), 4),
+            mean_pool_rate=round(sum(p["success_rate"] for p in pool) / len(pool), 4))
+    keep = {(p["task_id"], p["mutation_type"]) for p in pool}
+    return [(t, s) for t, s in pairs if (t.id, s.type) in keep]
+
+
+async def grpo_phase(run: Run, model, backend, sft_val: float,
+                     pool: list[tuple[Any, Any]] | None = None) -> dict[str, Any]:
     """GRPO with a val check every `val_every` steps; returns the best step by val success."""
     import art
 
     cfg = run.cfg
     history: list[dict[str, Any]] = []
-    pairs = episodes("train", cfg.seed)
+    pairs = pool if pool else episodes("train", cfg.seed)
     rng = random.Random(cfg.seed + 1)
     # budget check before each step: stop while there is time left for the final val eval
     last_step_s = 0.0
@@ -162,7 +195,8 @@ async def grpo_phase(run: Run, model, backend, sft_val: float) -> dict[str, Any]
             run.log("grpo_stopped_for_time", step=step)
             break
         started = time.monotonic()
-        batch = rng.sample(pairs, cfg.groups_per_step)
+        batch = (rng.sample(pairs, cfg.groups_per_step) if len(pairs) >= cfg.groups_per_step
+                 else rng.choices(pairs, k=cfg.groups_per_step))
         traces: list[dict] = []
 
         async def traj(task, spec, sink=traces):
@@ -174,6 +208,9 @@ async def grpo_phase(run: Run, model, backend, sft_val: float) -> dict[str, Any]
             [art.TrajectoryGroup(traj(t, s) for _ in range(cfg.rollouts_per_group)) for t, s in batch],
             max_exceptions=cfg.rollouts_per_group * cfg.groups_per_step,
         )
+        with (run.out / "traces_grpo.jsonl").open("a") as fh:
+            for t in traces:
+                fh.write(trace_line({**t, "grpo_step": step}) + "\n")
         rewards = [[tr.reward for tr in g.trajectories] for g in groups]
         informative = sum(1 for r in rewards if r and max(r) > min(r))
         result = await backend.train(model, groups, learning_rate=cfg.grpo_lr)
@@ -185,11 +222,13 @@ async def grpo_phase(run: Run, model, backend, sft_val: float) -> dict[str, Any]
                 train={k: v for k, v in list(result.metrics.items())[:12] if isinstance(v, (int, float))})
         if (step + 1) % cfg.val_every == 0 or step + 1 == cfg.grpo_steps:
             val = await val_eval(run, model, f"grpo_s{result.step}")
-            history.append({"step": result.step, "success": val.get("success", 0.0)})
+            history.append({"step": result.step, "success": val.get("success", 0.0),
+                            "reward": val.get("reward", 0.0)})
             if val.get("success", 0.0) < cfg.early_stop_ratio * sft_val:
                 run.log("grpo_early_stop", step=result.step, val_success=val.get("success"), sft_val=sft_val)
                 break
-    best = max(history, key=lambda h: h["success"], default=None)
+    # reward, not success: val success sits near the ceiling for 4B (88% at base)
+    best = max(history, key=lambda h: (h["reward"], h["success"]), default=None)
     return {"history": history, "best": best}
 
 
@@ -223,7 +262,8 @@ async def run_pipeline(cfg: PipelineConfig) -> dict[str, Any]:
             sft_stats = await sft_phase(run, model)
             sft_step = await model.get_step()
             sft = await val_eval(run, model, "sft")
-        grpo_info = await grpo_phase(run, model, backend, sft.get("success", 0.0))
+        pool = await scan_phase(run, model) if cfg.pool_scan else None
+        grpo_info = await grpo_phase(run, model, backend, sft.get("success", 0.0), pool)
         grpo = await val_eval(run, model, "grpo")
         summary = {"config": asdict(cfg), "val": {"base": base, "sft": sft, "grpo": grpo}, "sft_data": sft_stats,
                    "sft_step": sft_step, "final_step": await model.get_step(), "grpo_val": grpo_info,

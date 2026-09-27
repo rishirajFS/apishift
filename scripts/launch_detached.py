@@ -39,6 +39,19 @@ def pilot_plan(run_name: str) -> tuple[dict, float, float]:
     return cfg, round(gpu, 2), round(cpu, 2)
 
 
+REPILOT_TIMEOUT_S = 8100
+
+
+def repilot_plan(run_name: str) -> tuple[dict, float, float]:
+    """4B GRPO from base on the adaptation-hard pool (scan 4 samples/episode, then 30 steps)."""
+    cfg = {"run_name": run_name, "base_model": "Qwen/Qwen3-4B", "skip_sft": True, "pool_scan": True,
+           "scan_samples": 4, "grpo_steps": 30, "groups_per_step": 8, "rollouts_per_group": 6,
+           "grpo_lr": 3e-6, "val_every": 10, "time_budget_s": REPILOT_TIMEOUT_S - 600}
+    gpu = REPILOT_TIMEOUT_S / 3600 * 3.95 * 1.1
+    cpu = (REPILOT_TIMEOUT_S + 3 * 3600 + 1800) / 3600 * CPU_USD_PER_HOUR
+    return cfg, round(gpu, 2), round(cpu, 2)
+
+
 def prompt_baseline_plan(name: str) -> tuple[dict, float, float]:
     job = {"name": name, "model": "qwen3-4b", "served": "qwen3-4b", "variant": "qwen3-4b-thinking-recovery",
            "split": "test", "seeds": [0, 1, 2], "thinking": True, "prompt_variant": "recovery",
@@ -66,6 +79,8 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--pilot", action="store_true", help="4B GRPO pilot from base, H100")
     p.add_argument("--prompt-baseline", action="store_true", help="4B thinking + recovery prompt, 3 seeds, L4")
+    p.add_argument("--repilot", action="store_true", help="4B GRPO on the adaptation-hard pool, H100")
+    p.add_argument("--repilot-name", default="grpo-4b-pool-v1")
     p.add_argument("--pilot-name", default="grpo-4b-pilot-v1")
     p.add_argument("--baseline-name", default="prompt-recovery-4b-v1")
     p.add_argument("--budget-usd", type=float, required=True)
@@ -78,6 +93,8 @@ def main() -> None:
         plans.append(("pilot", *pilot_plan(args.pilot_name)))
     if args.prompt_baseline:
         plans.append(("prompt_baseline", *prompt_baseline_plan(args.baseline_name)))
+    if args.repilot:
+        plans.append(("pilot", *repilot_plan(args.repilot_name)))
     if not plans:
         raise SystemExit("nothing to launch")
     planned = round(sum(g + c for _, _, g, c in plans), 2)
@@ -85,7 +102,7 @@ def main() -> None:
 
     os.environ["MODAL_PROFILE"] = args.modal_profile
     os.environ["APISHIFT_TRAIN_GPU"] = "H100"
-    os.environ["APISHIFT_TRAIN_TIMEOUT_S"] = str(PILOT_TIMEOUT_S)
+    os.environ["APISHIFT_TRAIN_TIMEOUT_S"] = str(REPILOT_TIMEOUT_S if args.repilot else PILOT_TIMEOUT_S)
     os.environ["APISHIFT_MODEL"] = "qwen3-4b"
     os.environ["APISHIFT_EVAL_JOB_TIMEOUT_S"] = str(EVAL_JOB_TIMEOUT_S)
     import modal
