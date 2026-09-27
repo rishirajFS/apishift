@@ -18,5 +18,9 @@
   "sample_time_limit_s": 900
  },
  "launched": 1790461022.5791516,
- "status": "waiting_for_gpu"
+ "status": "failed",
+ "ready_after_s": 261,
+ "ended": 1790461291.345716,
+ "gpu_seconds_est": 266,
+ "est_gpu_usd": 0.06
 }

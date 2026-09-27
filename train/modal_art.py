@@ -51,6 +51,7 @@ def _write_job_record(run_name: str, record: dict) -> None:
     import json
     from pathlib import Path
 
+    ckpt_volume.reload()  # another container may have updated the record; never merge onto a stale copy
     path = Path(CKPT) / "jobs" / f"{run_name}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     old = json.loads(path.read_text()) if path.exists() else {}

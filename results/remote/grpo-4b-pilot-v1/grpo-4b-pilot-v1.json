@@ -11,7 +11,39 @@
   "val_every": 5,
   "time_budget_s": 6300
  },
- "status": "running",
- "gpu": "H100",
- "gpu_started": 1790461033.8263175
+ "status": "prefetching",
+ "finished": 1790464195.363148,
+ "best_step": 10,
+ "val": {
+  "base": {
+   "n": 75,
+   "success": 0.88,
+   "reward": 0.8261,
+   "turns": 4.427,
+   "success_control": 0.9333,
+   "success_seen": 0.8667,
+   "errors": 0,
+   "step": 0
+  },
+  "sft": {
+   "n": 75,
+   "success": 0.88,
+   "reward": 0.8261,
+   "turns": 4.427,
+   "success_control": 0.9333,
+   "success_seen": 0.8667,
+   "errors": 0,
+   "step": 0
+  },
+  "grpo": {
+   "n": 75,
+   "success": 0.8267,
+   "reward": 0.7789,
+   "turns": 4.16,
+   "success_control": 0.8667,
+   "success_seen": 0.8167,
+   "errors": 0,
+   "step": 20
+  }
+ }
 }

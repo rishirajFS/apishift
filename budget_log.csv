@@ -23,5 +23,6 @@ date,job,modal_app,gpu,duration_s,est_cost_usd,actual_cost_usd,notes
 2026-09-25T08:49:02,train_debug-1.7b-v3,apishift-train,H100,3355,4.05,3.8300,timeout_s=5400;actual: share of apishift-train billing
 2026-09-25T09:12:00,eval_sft-1.7b-thinking_test_s0,apishift-serve-qwen3-1-7b-lora,L4,1371,0.34,,"seeds=0;ready_after_s=224;wall_s=1377;billing not settled yet, estimate counted"
 2026-09-25T09:25:11,eval_grpo-1.7b-thinking_test_s0,apishift-serve-qwen3-1-7b-lora,L4,785,0.19,,"seeds=0;ready_after_s=263;wall_s=790;billing not settled yet, estimate counted"
-2026-09-26T18:16:41,detached_pilot_grpo-4b-pilot-v1,apishift-train,H100,,8.67,,"detached launch; call fc-01M3FWN69VZ6Y41NR7B03EBHB1; worst-case estimate, actual from billing later"
-2026-09-26T18:16:59,detached_prompt_baseline_prompt-recovery-4b-v1,apishift-serve-qwen3-4b,L4,,1.86,,"detached launch; call fc-01M3FWNQSMETBXX1VCPC70W1FD; worst-case estimate, actual from billing later"
+2026-09-26T18:16:41,detached_pilot_grpo-4b-pilot-v1,apishift-train,H100,,8.67,3.8262,"detached launch; call fc-01M3FWN69VZ6Y41NR7B03EBHB1; worst-case estimate, actual from billing later;actual from billing; 20 GRPO steps, 53 min"
+2026-09-26T18:16:59,detached_prompt_baseline_prompt-recovery-4b-v1,apishift-serve-qwen3-4b,L4,,1.86,0.1060,"detached launch; call fc-01M3FWNQSMETBXX1VCPC70W1FD; worst-case estimate, actual from billing later;actual from billing; failed: eval image pinned openai<3 (Inspect needs >=3.1)"
+2026-09-26T23:06:28,detached_prompt_baseline_prompt-recovery-4b-v2,apishift-serve-qwen3-4b,L4,,1.86,,"detached launch; call fc-01M3GD7SQ06ZBAK53RQAMA86SC; worst-case estimate, actual from billing later"

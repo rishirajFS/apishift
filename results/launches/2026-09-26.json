@@ -17,10 +17,10 @@
   "planned_cpu_usd": 0.34
  },
  "prompt_baseline": {
-  "call_id": "fc-01M3FWNQSMETBXX1VCPC70W1FD",
+  "call_id": "fc-01M3GD7SQ06ZBAK53RQAMA86SC",
   "app": "apishift-serve-qwen3-4b",
   "spec": {
-   "name": "prompt-recovery-4b-v1",
+   "name": "prompt-recovery-4b-v2",
    "model": "qwen3-4b",
    "served": "qwen3-4b",
    "variant": "qwen3-4b-thinking-recovery",

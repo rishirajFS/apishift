@@ -117,7 +117,8 @@ EVAL_JOB_TIMEOUT_S = int(os.environ.get("APISHIFT_EVAL_JOB_TIMEOUT_S", str(4 * 3
 
 eval_image = (
     modal.Image.debian_slim(python_version="3.12")
-    .uv_pip_install("inspect-ai==0.3.268", "openai>=2,<3")
+    # same versions as uv.lock; Inspect 0.3.268's OpenAI-compatible provider needs openai>=3.1
+    .uv_pip_install("inspect-ai==0.3.268", "openai==3.19.2")
     .add_local_python_source("apishift", "harness", "infra")
 )
 
