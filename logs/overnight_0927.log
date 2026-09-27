@@ -1,0 +1,101 @@
+[Sun Sep 27 00:11:49 EDT 2026] launching re-pilot grpo-4b-pool-v1
+budget ok: $0.00 logged since 2026-09-27, planned detached launch ['pilot'] $10.14, cap $12.00
+✓ Initialized. View run at 
+https://modal.com/apps/teel-lab-ace-ai/main/ap-bDgKGf2CUKHORw6VqpOGPu
+✓ Created objects.
+├── 🔨 Created mount PythonPackage:train
+├── 🔨 Created mount PythonPackage:apishift, PythonPackage:train
+├── 🔨 Created function prefetch.
+├── 🔨 Created function train.
+└── 🔨 Created function train_job.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+WARNING: The NVIDIA Driver was not detected.  GPU functionality will not be available.
+   Use the NVIDIA Container Toolkit to start this container with GPU support; see
+   https://docs.nvidia.com/datacenter/cloud-native/ .
+
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.8.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+WARNING: The NVIDIA Driver was not detected.  GPU functionality will not be available.
+   Use the NVIDIA Container Toolkit to start this container with GPU support; see
+   https://docs.nvidia.com/datacenter/cloud-native/ .
+
+[modal-client] 2026-09-27T00:12:01-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/teel-lab-ace-ai/main/ap-bDgKGf2CUKHORw6VqpOGPu
+launched pilot: call fc-01M3GGZY0B2708KMX2004TWJ7E on app apishift-train
+recorded results/launches/2026-09-27.json (modal profile teel-lab-ace-ai)
+[Sun Sep 27 00:12:02 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=prefetching  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 00:22:05 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=530  est_gpu_usd=0.58
+[Sun Sep 27 00:32:06 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=530  est_gpu_usd=0.58
+[Sun Sep 27 00:42:08 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=530  est_gpu_usd=0.58
+[Sun Sep 27 00:52:10 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=530  est_gpu_usd=0.58
+[Sun Sep 27 01:02:13 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 01:12:19 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 01:22:21 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 01:32:23 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 01:42:26 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 01:52:27 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 02:02:30 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 02:12:34 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 02:22:36 EDT 2026] pilot            grpo-4b-pool-v1              call=running  job=running  gpu_s=2435  est_gpu_usd=2.67
+[Sun Sep 27 02:32:43 EDT 2026] pilot            grpo-4b-pool-v1              call=finished  job=done  gpu_s=5411  est_gpu_usd=5.94
+[Sun Sep 27 02:32:43 EDT 2026] recording re-pilot cost estimate from its job record (billing reconciles later)
+re-pilot estimate $6.63 (gpu_seconds=5411)
+[Sun Sep 27 02:32:43 EDT 2026] launching checkpoint eval
+budget ok: $6.63 logged since 2026-09-27, planned detached launch ['checkpoint_eval'] $1.86, cap $12.00
+✓ Initialized. View run at 
+https://modal.com/apps/teel-lab-ace-ai/main/ap-zwdg1RB8iBV5OGCy5YfxxF
+✓ Created objects.
+├── 🔨 Created mount PythonPackage:infra
+├── 🔨 Created mount PythonPackage:apishift, PythonPackage:harness, 
+│   PythonPackage:infra
+├── 🔨 Created function download_weights.
+├── 🔨 Created web function serve => 
+│   https://teel-lab-ace-ai--apishift-serve-qwen3-4b-lora-serve-dev.modal.run
+└── 🔨 Created function eval_job.
+[modal-client] 2026-09-27T02:32:54-0400 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/teel-lab-ace-ai/main/ap-zwdg1RB8iBV5OGCy5YfxxF
+launched checkpoint_eval: call fc-01M3GS1S784YQSXGNPXWNEGT9V on app apishift-serve-qwen3-4b-lora
+recorded results/launches/2026-09-27.json (modal profile teel-lab-ace-ai)
+[Sun Sep 27 02:33:01 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=None  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 02:43:07 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=running  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 02:53:14 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=running  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 03:03:22 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=running  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 03:13:30 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=running  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 03:23:37 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=running  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 03:33:44 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=running  job=running  gpu_s=None  est_gpu_usd=None
+[Sun Sep 27 03:43:52 EDT 2026] checkpoint_eval  eval-grpo-4b                 call=finished  job=done  gpu_s=3665  est_gpu_usd=0.81
+[Sun Sep 27 03:43:52 EDT 2026] collecting prompt baseline (Sep 26 launch)
+pilot            grpo-4b-pilot-v1             call=finished  job=prefetching  gpu_s=None  est_gpu_usd=None
+  stopped app apishift-train
+prompt_baseline  prompt-recovery-4b-v2        call=finished  job=done  gpu_s=3012  est_gpu_usd=0.67
+  stopped app apishift-serve-qwen3-4b
+[Sun Sep 27 03:43:57 EDT 2026] done

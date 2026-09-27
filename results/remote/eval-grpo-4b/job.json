@@ -1,0 +1,50 @@
+{
+ "job": {
+  "name": "eval-grpo-4b",
+  "model": "qwen3-4b",
+  "served": "grpo-4b",
+  "lora": "grpo-4b=/ckpt/art/apishift/models/grpo-4b-pool-v1/checkpoints/0017",
+  "variant": "grpo-4b-thinking",
+  "split": "test",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "thinking": true,
+  "prompt_variant": "default",
+  "max_connections": 48,
+  "queue_timeout_s": 10800,
+  "max_eval_s": 3600,
+  "sample_time_limit_s": 900,
+  "source_step": 17
+ },
+ "launched": 1790490779.771105,
+ "status": "done",
+ "ready_after_s": 291,
+ "smoke": {
+  "n_errors": 0,
+  "tool_calls": 20,
+  "strict_tools": []
+ },
+ "by_seed": {
+  "0": {
+   "control": 0.9333,
+   "seen": 0.7917,
+   "heldout": 0.4828
+  },
+  "1": {
+   "control": 0.8667,
+   "seen": 0.8833,
+   "heldout": 0.2931
+  },
+  "2": {
+   "control": 0.8667,
+   "seen": 0.8667,
+   "heldout": 0.3621
+  }
+ },
+ "ended": 1790494446.308778,
+ "gpu_seconds_est": 3665,
+ "est_gpu_usd": 0.81
+}
