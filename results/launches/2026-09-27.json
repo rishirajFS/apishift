@@ -1,0 +1,21 @@
+{
+ "pilot": {
+  "call_id": "fc-01M3GGZY0B2708KMX2004TWJ7E",
+  "app": "apishift-train",
+  "spec": {
+   "run_name": "grpo-4b-pool-v1",
+   "base_model": "Qwen/Qwen3-4B",
+   "skip_sft": true,
+   "pool_scan": true,
+   "scan_samples": 4,
+   "grpo_steps": 30,
+   "groups_per_step": 8,
+   "rollouts_per_group": 6,
+   "grpo_lr": 3e-06,
+   "val_every": 10,
+   "time_budget_s": 7500
+  },
+  "planned_gpu_usd": 9.78,
+  "planned_cpu_usd": 0.36
+ }
+}

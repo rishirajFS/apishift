@@ -52,6 +52,21 @@ def repilot_plan(run_name: str) -> tuple[dict, float, float]:
     return cfg, round(gpu, 2), round(cpu, 2)
 
 
+def checkpoint_eval_plan(run_name: str, lora_name: str) -> tuple[dict, float, float]:
+    """Test-split eval (3 seeds, default prompt) of a finished run's best checkpoint, served as LoRA."""
+    summary = json.loads((REPO / "results" / "remote" / run_name / run_name / "summary.json").read_text())
+    step = summary.get("best_step") or summary["final_step"]
+    by_step = {int(Path(c).name): c for c in summary["checkpoints"] if Path(c).name.isdigit()}
+    lora = f"{lora_name}={by_step[step]}"
+    job = {"name": f"eval-{lora_name}", "model": "qwen3-4b", "served": lora_name, "lora": lora,
+           "variant": f"{lora_name}-thinking", "split": "test", "seeds": [0, 1, 2], "thinking": True,
+           "prompt_variant": "default", "max_connections": 48, "queue_timeout_s": EVAL_QUEUE_S,
+           "max_eval_s": EVAL_MAX_S, "sample_time_limit_s": EVAL_SAMPLE_LIMIT_S, "source_step": step}
+    gpu = (EVAL_MAX_S + 1800 + 900) / 3600 * 0.80 * 1.1
+    cpu = EVAL_JOB_TIMEOUT_S / 3600 * CPU_USD_PER_HOUR
+    return job, round(gpu, 2), round(cpu, 2)
+
+
 def prompt_baseline_plan(name: str) -> tuple[dict, float, float]:
     job = {"name": name, "model": "qwen3-4b", "served": "qwen3-4b", "variant": "qwen3-4b-thinking-recovery",
            "split": "test", "seeds": [0, 1, 2], "thinking": True, "prompt_variant": "recovery",
@@ -81,11 +96,14 @@ def main() -> None:
     p.add_argument("--prompt-baseline", action="store_true", help="4B thinking + recovery prompt, 3 seeds, L4")
     p.add_argument("--repilot", action="store_true", help="4B GRPO on the adaptation-hard pool, H100")
     p.add_argument("--repilot-name", default="grpo-4b-pool-v1")
+    p.add_argument("--checkpoint-eval", default=None, metavar="RUN_NAME",
+                   help="eval the best checkpoint of a finished run (needs results/remote/<run>/ collected)")
     p.add_argument("--pilot-name", default="grpo-4b-pilot-v1")
     p.add_argument("--baseline-name", default="prompt-recovery-4b-v1")
     p.add_argument("--budget-usd", type=float, required=True)
     p.add_argument("--budget-since", required=True)
     p.add_argument("--modal-profile", default="teel-lab-ace-ai")
+    p.add_argument("--launches-file", type=Path, default=None, help="default: results/launches/<today>.json")
     args = p.parse_args()
 
     plans = []
@@ -95,6 +113,8 @@ def main() -> None:
         plans.append(("prompt_baseline", *prompt_baseline_plan(args.baseline_name)))
     if args.repilot:
         plans.append(("pilot", *repilot_plan(args.repilot_name)))
+    if args.checkpoint_eval:
+        plans.append(("checkpoint_eval", *checkpoint_eval_plan(args.checkpoint_eval, "grpo-4b")))
     if not plans:
         raise SystemExit("nothing to launch")
     planned = round(sum(g + c for _, _, g, c in plans), 2)
@@ -116,6 +136,8 @@ def main() -> None:
                 call = mod.train_job.spawn(spec)
             app_name, gpu = mod.app.name, "H100"
         else:
+            if spec.get("lora"):
+                os.environ["APISHIFT_LORA"] = spec["lora"]
             from infra import modal_vllm as mod
 
             with modal.enable_output(), mod.app.run(detach=True):
@@ -128,7 +150,7 @@ def main() -> None:
                 "actual from billing later")
         print(f"launched {name}: call {call.object_id} on app {app_name}", flush=True)
 
-    out = REPO / "results" / "launches" / f"{dt.date.today().isoformat()}.json"
+    out = args.launches_file or REPO / "results" / "launches" / f"{dt.date.today().isoformat()}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     existing = json.loads(out.read_text()) if out.exists() else {}
     out.write_text(json.dumps({**existing, **launched}, indent=1) + "\n")
