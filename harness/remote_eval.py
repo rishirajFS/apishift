@@ -58,8 +58,12 @@ def run_job(job: dict[str, Any], url: str, out_root: str, usd_per_hour: float, c
             if time.time() - t_ready > job["max_eval_s"]:
                 _record(rec, stopped_for_time_before_seed=seed)
                 break
-            log = run_eval(seed=seed, limit_per_type=None, **common)
-            summary, traces = summarize(log, job["variant"])
+            for attempt in (1, 2):  # a preempted GPU server makes episodes error; rerun that seed once
+                log = run_eval(seed=seed, limit_per_type=None, **common)
+                summary, traces = summarize(log, job["variant"])
+                if summary["n_errors"] <= 0.05 * max(summary["n_samples"], 1):
+                    break
+                _record(rec, **{f"seed{seed}_attempt{attempt}_errors": summary["n_errors"]})
             summary |= {"model": job["model"], "lora": job.get("lora"), "split": job["split"], "seed": seed,
                         "prompt_variant": job["prompt_variant"], "decoding": decoding(job["thinking"])}
             write_results(summary, traces, out / "results", f"baseline_{job['variant']}_{job['split']}_s{seed}")

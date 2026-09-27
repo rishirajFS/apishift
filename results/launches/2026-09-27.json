@@ -17,5 +17,31 @@
   },
   "planned_gpu_usd": 9.78,
   "planned_cpu_usd": 0.36
+ },
+ "checkpoint_eval": {
+  "call_id": "fc-01M3GS1S784YQSXGNPXWNEGT9V",
+  "app": "apishift-serve-qwen3-4b-lora",
+  "spec": {
+   "name": "eval-grpo-4b",
+   "model": "qwen3-4b",
+   "served": "grpo-4b",
+   "lora": "grpo-4b=/ckpt/art/apishift/models/grpo-4b-pool-v1/checkpoints/0017",
+   "variant": "grpo-4b-thinking",
+   "split": "test",
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "thinking": true,
+   "prompt_variant": "default",
+   "max_connections": 48,
+   "queue_timeout_s": 10800,
+   "max_eval_s": 3600,
+   "sample_time_limit_s": 900,
+   "source_step": 17
+  },
+  "planned_gpu_usd": 1.54,
+  "planned_cpu_usd": 0.32
  }
 }

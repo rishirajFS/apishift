@@ -24,7 +24,7 @@ sys.path.insert(0, str(REPO))
 
 from harness import budget  # noqa: E402
 
-CPU_USD_PER_HOUR = 0.063  # 1 core + 2 GiB on Modal
+CPU_USD_PER_HOUR = 0.19  # 1 core + 2 GiB on Modal, x3 for nonpreemptible orchestrators
 PILOT_TIMEOUT_S = 6900
 EVAL_QUEUE_S, EVAL_MAX_S, EVAL_SAMPLE_LIMIT_S = 3 * 3600, 3600, 900
 EVAL_JOB_TIMEOUT_S = EVAL_QUEUE_S + 2 * 3600
@@ -46,21 +46,24 @@ def repilot_plan(run_name: str) -> tuple[dict, float, float]:
     """4B GRPO from base on the adaptation-hard pool (scan 4 samples/episode, then 30 steps)."""
     cfg = {"run_name": run_name, "base_model": "Qwen/Qwen3-4B", "skip_sft": True, "pool_scan": True,
            "scan_samples": 4, "grpo_steps": 30, "groups_per_step": 8, "rollouts_per_group": 6,
-           "grpo_lr": 3e-6, "val_every": 10, "time_budget_s": REPILOT_TIMEOUT_S - 600}
+           "grpo_lr": 3e-6, "val_every": 10, "time_budget_s": REPILOT_TIMEOUT_S - 600,
+           "total_gpu_budget_s": REPILOT_TIMEOUT_S - 600}
     gpu = REPILOT_TIMEOUT_S / 3600 * 3.95 * 1.1
     cpu = (REPILOT_TIMEOUT_S + 3 * 3600 + 1800) / 3600 * CPU_USD_PER_HOUR
     return cfg, round(gpu, 2), round(cpu, 2)
 
 
-def checkpoint_eval_plan(run_name: str, lora_name: str) -> tuple[dict, float, float]:
+def checkpoint_eval_plan(run_name: str, lora_name: str, prompt_variant: str = "default",
+                         step: int | None = None) -> tuple[dict, float, float]:
     """Test-split eval (3 seeds, default prompt) of a finished run's best checkpoint, served as LoRA."""
     summary = json.loads((REPO / "results" / "remote" / run_name / run_name / "summary.json").read_text())
-    step = summary.get("best_step") or summary["final_step"]
+    step = step or summary.get("best_step") or summary["final_step"]
     by_step = {int(Path(c).name): c for c in summary["checkpoints"] if Path(c).name.isdigit()}
     lora = f"{lora_name}={by_step[step]}"
-    job = {"name": f"eval-{lora_name}", "model": "qwen3-4b", "served": lora_name, "lora": lora,
-           "variant": f"{lora_name}-thinking", "split": "test", "seeds": [0, 1, 2], "thinking": True,
-           "prompt_variant": "default", "max_connections": 48, "queue_timeout_s": EVAL_QUEUE_S,
+    suffix = "" if prompt_variant == "default" else f"-{prompt_variant}"
+    job = {"name": f"eval-{lora_name}{suffix}", "model": "qwen3-4b", "served": lora_name, "lora": lora,
+           "variant": f"{lora_name}-thinking{suffix}", "split": "test", "seeds": [0, 1, 2], "thinking": True,
+           "prompt_variant": prompt_variant, "max_connections": 48, "queue_timeout_s": EVAL_QUEUE_S,
            "max_eval_s": EVAL_MAX_S, "sample_time_limit_s": EVAL_SAMPLE_LIMIT_S, "source_step": step}
     gpu = (EVAL_MAX_S + 1800 + 900) / 3600 * 0.80 * 1.1
     cpu = EVAL_JOB_TIMEOUT_S / 3600 * CPU_USD_PER_HOUR
@@ -98,6 +101,8 @@ def main() -> None:
     p.add_argument("--repilot-name", default="grpo-4b-pool-v1")
     p.add_argument("--checkpoint-eval", default=None, metavar="RUN_NAME",
                    help="eval the best checkpoint of a finished run (needs results/remote/<run>/ collected)")
+    p.add_argument("--checkpoint-prompt", default="default", choices=["default", "recovery"])
+    p.add_argument("--checkpoint-step", type=int, default=None, help="default: the run's best step")
     p.add_argument("--pilot-name", default="grpo-4b-pilot-v1")
     p.add_argument("--baseline-name", default="prompt-recovery-4b-v1")
     p.add_argument("--budget-usd", type=float, required=True)
@@ -114,7 +119,8 @@ def main() -> None:
     if args.repilot:
         plans.append(("pilot", *repilot_plan(args.repilot_name)))
     if args.checkpoint_eval:
-        plans.append(("checkpoint_eval", *checkpoint_eval_plan(args.checkpoint_eval, "grpo-4b")))
+        plans.append(("checkpoint_eval", *checkpoint_eval_plan(args.checkpoint_eval, "grpo-4b",
+                                                                args.checkpoint_prompt, args.checkpoint_step)))
     if not plans:
         raise SystemExit("nothing to launch")
     planned = round(sum(g + c for _, _, g, c in plans), 2)

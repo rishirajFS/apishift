@@ -72,7 +72,7 @@ def train(cfg: dict) -> dict:
     _write_job_record(cfg["run_name"], {"gpu": GPU, "gpu_started": started, "status": "running"})
     status = "failed"
     try:
-        summary = asyncio.run(run_pipeline(PipelineConfig(**cfg)))
+        summary = asyncio.run(run_pipeline(PipelineConfig(**cfg), commit=ckpt_volume.commit))
         status = "done"
         return summary
     finally:
@@ -85,15 +85,31 @@ def train(cfg: dict) -> dict:
 ORCH_TIMEOUT_S = TIMEOUT_S + 3 * 3600 + 1800  # train cap + up to 3 h waiting for a GPU + prefetch
 
 
+# nonpreemptible (3x CPU price, ~$0.19/h): a preempted orchestrator used to re-spawn GPU training,
+# so two H100 runs overlapped. GPU functions cannot be nonpreemptible; the pipeline resumes instead.
 @app.function(image=image, cpu=1, memory=2048, volumes={CKPT: ckpt_volume},
-              timeout=ORCH_TIMEOUT_S, max_containers=1)
+              timeout=ORCH_TIMEOUT_S, max_containers=1, nonpreemptible=True)
 def train_job(cfg: dict) -> dict:
-    """Detached entry point: prefetch weights on CPU, then run the GPU pipeline. Lives on Modal only."""
-    import time
+    """Detached entry point: prefetch weights on CPU, then run the GPU pipeline. Lives on Modal only.
 
-    _write_job_record(cfg["run_name"], {"launched": time.time(), "config": cfg, "status": "prefetching"})
-    prefetch.remote(cfg["base_model"])
-    summary = train.remote(cfg)
+    Idempotent: if this input is ever restarted, it re-attaches to the GPU call it already spawned.
+    """
+    import json
+    import time
+    from pathlib import Path
+
+    ckpt_volume.reload()
+    rec_path = Path(CKPT) / "jobs" / f"{cfg['run_name']}.json"
+    rec = json.loads(rec_path.read_text()) if rec_path.exists() else {}
+    if rec.get("train_call_id") and rec.get("status") not in ("done", "failed"):
+        call = modal.FunctionCall.from_id(rec["train_call_id"])
+        _write_job_record(cfg["run_name"], {"orchestrator_reattached": time.time()})
+    else:
+        _write_job_record(cfg["run_name"], {"launched": time.time(), "config": cfg, "status": "prefetching"})
+        prefetch.remote(cfg["base_model"])
+        call = train.spawn(cfg)
+        _write_job_record(cfg["run_name"], {"train_call_id": call.object_id})
+    summary = call.get()
     _write_job_record(cfg["run_name"], {"finished": time.time(), "best_step": summary.get("best_step"),
                                         "val": summary.get("val")})
     return summary

@@ -23,6 +23,7 @@ from typing import Any
 
 from apishift.sampling import episodes
 from train.art_rollout import Sampling, rollout, sft_turn_examples, trace_line
+from train.state import RunState, config_hash
 
 VAL_GROUPS = ("control", "seen")
 
@@ -60,6 +61,8 @@ class PipelineConfig:
     pool_hi: float = 0.9
     control_min: float = 0.5
     min_pool: int = 24
+    # GPU seconds allowed across ALL attempts (Modal restarts preempted GPU functions); 0 = time_budget_s
+    total_gpu_budget_s: int = 0
 
 
 class Run:
@@ -68,7 +71,8 @@ class Run:
         self.t0 = time.monotonic()
         self.out = Path(cfg.out_root) / cfg.run_name
         self.out.mkdir(parents=True, exist_ok=True)
-        self.metrics: list[dict[str, Any]] = []
+        prev = self.out / "metrics.json"
+        self.metrics: list[dict[str, Any]] = json.loads(prev.read_text()) if prev.exists() else []
         self.sem = asyncio.Semaphore(cfg.concurrency)
         self.sampling = Sampling(max_tokens=cfg.max_tokens)
 
@@ -156,6 +160,11 @@ async def sft_phase(run: Run, model) -> dict[str, Any]:
     return stats
 
 
+def load_pool(run: Run) -> list[tuple[Any, Any]]:
+    keep = {(p["task_id"], p["mutation_type"]) for p in json.loads((run.out / "pool.json").read_text())}
+    return [(t, s) for t, s in episodes("train", run.cfg.seed) if (t.id, s.type) in keep]
+
+
 async def scan_phase(run: Run, model) -> list[tuple[Any, Any]]:
     """Sample every train episode k times; return the adaptation-hard (task, spec) pool."""
     from train.pool import select_pool
@@ -179,22 +188,31 @@ async def scan_phase(run: Run, model) -> list[tuple[Any, Any]]:
     return [(t, s) for t, s in pairs if (t.id, s.type) in keep]
 
 
-async def grpo_phase(run: Run, model, backend, sft_val: float,
-                     pool: list[tuple[Any, Any]] | None = None) -> dict[str, Any]:
-    """GRPO with a val check every `val_every` steps; returns the best step by val success."""
+async def grpo_phase(run: Run, model, backend, sft_val: float, pool: list[tuple[Any, Any]] | None,
+                     state: RunState, persist) -> dict[str, Any]:
+    """GRPO with a val check every `val_every` steps; resumes after a restart from ART's step.
+
+    Returns the val history and the best step by val reward.
+    """
     import art
 
     cfg = run.cfg
-    history: list[dict[str, Any]] = []
     pairs = pool if pool else episodes("train", cfg.seed)
-    rng = random.Random(cfg.seed + 1)
-    # budget check before each step: stop while there is time left for the final val eval
+    state.begin_grpo(await model.get_step())
+    persist()
+    remaining = state.remaining_steps(cfg.grpo_steps, await model.get_step())
+    budget_s = cfg.total_gpu_budget_s or cfg.time_budget_s
+    run.log("grpo_resume", start_step=state.grpo_start_step, remaining=remaining, attempt=state.attempt)
     last_step_s = 0.0
-    for step in range(cfg.grpo_steps):
-        if run.elapsed() + 2 * last_step_s + 900 > cfg.time_budget_s:
-            run.log("grpo_stopped_for_time", step=step)
+    for i in range(remaining):
+        done = cfg.grpo_steps - remaining + i  # GRPO steps finished before this one, across attempts
+        state.record_gpu(run.elapsed())
+        if (run.elapsed() + 2 * last_step_s + 900 > cfg.time_budget_s
+                or state.gpu_seconds_total() + 2 * last_step_s + 900 > budget_s):
+            run.log("grpo_stopped_for_time", step=done, gpu_s_total=round(state.gpu_seconds_total()))
             break
         started = time.monotonic()
+        rng = random.Random(cfg.seed * 100_003 + done)  # per-step seed: a resumed run samples the same batches
         batch = (rng.sample(pairs, cfg.groups_per_step) if len(pairs) >= cfg.groups_per_step
                  else rng.choices(pairs, k=cfg.groups_per_step))
         traces: list[dict] = []
@@ -210,26 +228,31 @@ async def grpo_phase(run: Run, model, backend, sft_val: float,
         )
         with (run.out / "traces_grpo.jsonl").open("a") as fh:
             for t in traces:
-                fh.write(trace_line({**t, "grpo_step": step}) + "\n")
+                fh.write(trace_line({**t, "grpo_step": done, "attempt": state.attempt}) + "\n")
         rewards = [[tr.reward for tr in g.trajectories] for g in groups]
         informative = sum(1 for r in rewards if r and max(r) > min(r))
         result = await backend.train(model, groups, learning_rate=cfg.grpo_lr)
         last_step_s = time.monotonic() - started
-        run.log("grpo_step", step=result.step, step_s=round(last_step_s),
+        run.log("grpo_step", step=result.step, grpo_step=done + 1, step_s=round(last_step_s),
                 reward=round(sum(map(sum, rewards)) / max(sum(map(len, rewards)), 1), 4),
                 success=round(sum(t["success"] for t in traces) / max(len(traces), 1), 4),
                 informative_groups=informative, groups=len(groups),
                 train={k: v for k, v in list(result.metrics.items())[:12] if isinstance(v, (int, float))})
-        if (step + 1) % cfg.val_every == 0 or step + 1 == cfg.grpo_steps:
+        stop = False
+        if (done + 1) % cfg.val_every == 0 or done + 1 == cfg.grpo_steps:
             val = await val_eval(run, model, f"grpo_s{result.step}")
-            history.append({"step": result.step, "success": val.get("success", 0.0),
-                            "reward": val.get("reward", 0.0)})
+            state.history.append({"step": result.step, "success": val.get("success", 0.0),
+                                  "reward": val.get("reward", 0.0)})
             if val.get("success", 0.0) < cfg.early_stop_ratio * sft_val:
                 run.log("grpo_early_stop", step=result.step, val_success=val.get("success"), sft_val=sft_val)
-                break
+                stop = True
+        state.record_gpu(run.elapsed())
+        persist()
+        if stop:
+            break
     # reward, not success: val success sits near the ceiling for 4B (88% at base)
-    best = max(history, key=lambda h: (h["reward"], h["success"]), default=None)
-    return {"history": history, "best": best}
+    best = max(state.history, key=lambda h: (h["reward"], h["success"]), default=None)
+    return {"history": state.history, "best": best}
 
 
 def checkpoint_dirs(cfg: PipelineConfig) -> list[str]:
@@ -237,12 +260,26 @@ def checkpoint_dirs(cfg: PipelineConfig) -> list[str]:
     return sorted(str(p) for p in run_dir.glob("*") if p.is_dir())
 
 
-async def run_pipeline(cfg: PipelineConfig) -> dict[str, Any]:
+RESUME_IGNORED_FIELDS = ("time_budget_s", "total_gpu_budget_s", "concurrency")
+
+
+async def run_pipeline(cfg: PipelineConfig, commit=lambda: None) -> dict[str, Any]:
+    """Run (or resume after a preemption restart) the pipeline. `commit` persists the Volume."""
     import art
     from art.local import LocalBackend
 
     run = Run(cfg)
     (run.out / "config.json").write_text(json.dumps(asdict(cfg), indent=1))
+    state = RunState.load(run.out / "state.json",
+                          config_hash({k: v for k, v in asdict(cfg).items() if k not in RESUME_IGNORED_FIELDS}))
+    if state.attempt > 1 and not cfg.skip_sft:
+        raise RuntimeError("resume after restart is only supported with skip_sft=True")
+
+    def persist() -> None:
+        state.record_gpu(run.elapsed())
+        state.save()
+        commit()
+
     backend = LocalBackend(path=cfg.art_path)
     model = art.TrainableModel(
         name=cfg.run_name, run_name=cfg.run_name, project="apishift", base_model=cfg.base_model,
@@ -254,24 +291,40 @@ async def run_pipeline(cfg: PipelineConfig) -> dict[str, Any]:
     )
     try:
         await model.register(backend)
-        run.log("registered", step=await model.get_step())
-        base = await val_eval(run, model, "base")
+        run.log("registered", step=await model.get_step(), attempt=state.attempt,
+                gpu_s_prev_attempts=round(state.gpu_s_prev_attempts))
+        persist()
+        if state.base_val is None:
+            state.base_val = await val_eval(run, model, "base")
+            persist()
+        base = state.base_val
         if cfg.skip_sft:
-            sft_stats, sft_step, sft = {"skipped": True}, await model.get_step(), base
+            sft_stats, sft_step, sft = {"skipped": True}, state.grpo_start_step or 0, base
         else:
             sft_stats = await sft_phase(run, model)
             sft_step = await model.get_step()
             sft = await val_eval(run, model, "sft")
-        pool = await scan_phase(run, model) if cfg.pool_scan else None
-        grpo_info = await grpo_phase(run, model, backend, sft.get("success", 0.0), pool)
+        pool = None
+        if cfg.pool_scan:
+            if state.pool_ready and (run.out / "pool.json").exists():
+                pool = load_pool(run)
+                run.log("pool_reused", size=len(pool))
+            else:
+                pool = await scan_phase(run, model)
+                state.pool_ready = True
+                persist()
+        grpo_info = await grpo_phase(run, model, backend, sft.get("success", 0.0), pool, state, persist)
         grpo = await val_eval(run, model, "grpo")
+        persist()
         summary = {"config": asdict(cfg), "val": {"base": base, "sft": sft, "grpo": grpo}, "sft_data": sft_stats,
                    "sft_step": sft_step, "final_step": await model.get_step(), "grpo_val": grpo_info,
                    "best_step": (grpo_info["best"] or {}).get("step"),
                    "model_dir": str(Path(cfg.art_path) / "apishift" / "models" / cfg.run_name),
-                   "checkpoints": checkpoint_dirs(cfg),
+                   "checkpoints": checkpoint_dirs(cfg), "attempts": state.attempt,
+                   "gpu_s_total": round(state.gpu_seconds_total()),
                    "elapsed_s": round(run.elapsed()), "metrics": run.metrics}
         (run.out / "summary.json").write_text(json.dumps(summary, indent=1))
+        commit()
         return summary
     finally:
         await backend.close()

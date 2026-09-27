@@ -125,7 +125,7 @@ eval_image = (
 
 @app.function(image=eval_image, cpu=1, memory=2048, volumes={CKPT: ckpt_volume},
               secrets=[model_secret, modal.Secret.from_name("apishift-vllm")],
-              timeout=EVAL_JOB_TIMEOUT_S, max_containers=1)
+              timeout=EVAL_JOB_TIMEOUT_S, max_containers=1, nonpreemptible=True)
 def eval_job(job: dict) -> dict:
     """Detached entry point: weights on CPU, then smoke gate + seeds against the vLLM server."""
     from harness.remote_eval import run_job
