@@ -17,7 +17,32 @@
   "max_eval_s": 3600,
   "sample_time_limit_s": 900
  },
- "launched": 1790478392.5932798,
- "status": "running",
- "ready_after_s": 214
+ "launched": 1790479981.0567179,
+ "status": "done",
+ "ready_after_s": 0,
+ "smoke": {
+  "n_errors": 0,
+  "tool_calls": 14,
+  "strict_tools": []
+ },
+ "by_seed": {
+  "0": {
+   "control": 0.8667,
+   "seen": 0.8167,
+   "heldout": 0.5517
+  },
+  "1": {
+   "control": 0.8667,
+   "seen": 0.8917,
+   "heldout": 0.4828
+  },
+  "2": {
+   "control": 0.8667,
+   "seen": 0.7833,
+   "heldout": 0.5172
+  }
+ },
+ "ended": 1790482994.8691475,
+ "gpu_seconds_est": 3012,
+ "est_gpu_usd": 0.67
 }
