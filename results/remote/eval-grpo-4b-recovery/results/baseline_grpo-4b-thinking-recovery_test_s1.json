@@ -1,0 +1,104 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.0133,
+      "mean_reward": 0.9307,
+      "mean_turns": 3.5,
+      "n": 30,
+      "success_rate": 0.9333
+    },
+    "heldout": {
+      "invalid_call_rate": 0.2198,
+      "mean_reward": 0.4605,
+      "mean_turns": 4.1034,
+      "n": 58,
+      "success_rate": 0.5
+    },
+    "seen": {
+      "invalid_call_rate": 0.2715,
+      "mean_reward": 0.7684,
+      "mean_turns": 4.65,
+      "n": 120,
+      "success_rate": 0.825
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.297,
+      "mean_reward": 0.745,
+      "mean_turns": 4.3667,
+      "n": 30,
+      "success_rate": 0.8
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 0.2756,
+      "mean_reward": 0.7307,
+      "mean_turns": 5.1667,
+      "n": 30,
+      "success_rate": 0.8
+    },
+    "format_change": {
+      "invalid_call_rate": 0.2947,
+      "mean_reward": 0.8187,
+      "mean_turns": 4.1333,
+      "n": 30,
+      "success_rate": 0.8667
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.25,
+      "mean_reward": 0.7117,
+      "mean_turns": 4.8667,
+      "n": 30,
+      "success_rate": 0.7667
+    },
+    "none": {
+      "invalid_call_rate": 0.0133,
+      "mean_reward": 0.9307,
+      "mean_turns": 3.5,
+      "n": 30,
+      "success_rate": 0.9333
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.0909,
+      "mean_reward": 0.1711,
+      "mean_turns": 2.9643,
+      "n": 28,
+      "success_rate": 0.1786
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.2538,
+      "mean_reward": 0.7983,
+      "mean_turns": 5.2333,
+      "n": 30,
+      "success_rate": 0.8667
+    }
+  },
+  "decoding": {
+    "enable_thinking": true,
+    "max_tokens": 4096,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "errors": [],
+  "eval_log": "2026-09-27T18-20-38-00-00_apishift-eval_3EfeEWTc8TuUu9eQfob4Us.eval",
+  "lora": "grpo-4b=/ckpt/art/apishift/models/grpo-4b-pool-v1/checkpoints/0017",
+  "model": "qwen3-4b",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.2303,
+    "mean_reward": 0.706,
+    "mean_turns": 4.3317,
+    "n": 208,
+    "success_rate": 0.75
+  },
+  "prompt_variant": "recovery",
+  "seed": 1,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 206,
+    "max_turns": 2
+  }
+}
