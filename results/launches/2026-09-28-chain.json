@@ -1,0 +1,44 @@
+{
+ "chain": {
+  "call_id": "fc-01M3MY7C564FYY9TW9EY65MVTS",
+  "app": "apishift-chain",
+  "spec": {
+   "train": {
+    "run_name": "grpo-4b-div-v1",
+    "base_model": "Qwen/Qwen3-4B",
+    "skip_sft": true,
+    "pool_scan": true,
+    "prompt_variant": "recovery",
+    "scan_samples": 4,
+    "grpo_steps": 30,
+    "groups_per_step": 8,
+    "rollouts_per_group": 6,
+    "grpo_lr": 3e-06,
+    "val_every": 10,
+    "time_budget_s": 7500,
+    "total_gpu_budget_s": 7500
+   },
+   "eval": {
+    "name": "eval-grpo-4b-div-v1-recovery",
+    "model": "qwen3-4b",
+    "served": "grpo-4b-div-v1",
+    "variant": "grpo-4b-div-v1-thinking-recovery",
+    "split": "test",
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "thinking": true,
+    "prompt_variant": "recovery",
+    "max_connections": 48,
+    "queue_timeout_s": 10800,
+    "max_eval_s": 3600,
+    "sample_time_limit_s": 900
+   },
+   "run_name": "grpo-4b-div-v1"
+  },
+  "planned_gpu_usd": 11.32,
+  "planned_cpu_usd": 2.04
+ }
+}
