@@ -25,6 +25,20 @@ def _record(path: Path, **values: Any) -> None:
     path.write_text(json.dumps({**old, **values}, indent=1))
 
 
+def load_lora(url: str, api_key: str, name: str, path: str) -> None:
+    """Register a LoRA checkpoint on a running vLLM server (needs VLLM_ALLOW_RUNTIME_LORA_UPDATING)."""
+    import urllib.request
+
+    req = urllib.request.Request(
+        f"{url}/v1/load_lora_adapter", method="POST",
+        data=json.dumps({"lora_name": name, "lora_path": path}).encode(),
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=300) as resp:
+        if resp.status != 200:
+            raise RuntimeError(f"load_lora_adapter failed: HTTP {resp.status}")
+
+
 def run_job(job: dict[str, Any], url: str, out_root: str, usd_per_hour: float, commit) -> dict[str, Any]:
     os.environ.setdefault("APISHIFT_API_KEY", os.environ["VLLM_API_KEY"])
     out = Path(out_root) / "evals" / job["name"]
@@ -42,6 +56,9 @@ def run_job(job: dict[str, Any], url: str, out_root: str, usd_per_hour: float, c
         t_ready = time.time()
         _record(rec, ready_after_s=round(waited), status="running")
         commit()
+        if job.get("runtime_lora"):
+            load_lora(url, os.environ["APISHIFT_API_KEY"], job["runtime_lora"]["name"], job["runtime_lora"]["path"])
+            _record(rec, lora_loaded=job["runtime_lora"])
 
         common = dict(served_name=job["served"], policy_name=job["variant"], base_url=url, split=job["split"],
                       max_connections=job["max_connections"], thinking=job["thinking"], log_dir=out / "logs",

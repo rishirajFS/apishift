@@ -71,6 +71,23 @@ def checkpoint_eval_plan(run_name: str, lora_name: str, prompt_variant: str = "d
     return job, round(gpu, 2), round(cpu, 2)
 
 
+CHAIN_TIMEOUT_S = 3 * 3600 + REPILOT_TIMEOUT_S + EVAL_QUEUE_S + 2 * 3600 + 1800
+
+
+def chain_plan(run_name: str, prompt_variant: str) -> tuple[dict, float, float]:
+    """Train (pool GRPO) then eval the best checkpoint, coordinated on Modal by one CPU job."""
+    train_cfg, train_gpu, _ = repilot_plan(run_name, prompt_variant)
+    served = run_name  # the LoRA's name on the eval server
+    suffix = "" if prompt_variant == "default" else f"-{prompt_variant}"
+    eval_spec = {"name": f"eval-{run_name}{suffix}", "model": "qwen3-4b", "served": served,
+                 "variant": f"{served}-thinking{suffix}", "split": "test", "seeds": [0, 1, 2], "thinking": True,
+                 "prompt_variant": prompt_variant, "max_connections": 48, "queue_timeout_s": EVAL_QUEUE_S,
+                 "max_eval_s": EVAL_MAX_S, "sample_time_limit_s": EVAL_SAMPLE_LIMIT_S}
+    eval_gpu = (EVAL_MAX_S + 1800 + 900) / 3600 * 0.80 * 1.1
+    cpu = CHAIN_TIMEOUT_S / 3600 * CPU_USD_PER_HOUR  # the single nonpreemptible coordinator
+    return {"train": train_cfg, "eval": eval_spec}, round(train_gpu + eval_gpu, 2), round(cpu, 2)
+
+
 def prompt_baseline_plan(name: str) -> tuple[dict, float, float]:
     job = {"name": name, "model": "qwen3-4b", "served": "qwen3-4b", "variant": "qwen3-4b-thinking-recovery",
            "split": "test", "seeds": [0, 1, 2], "thinking": True, "prompt_variant": "recovery",
@@ -103,6 +120,8 @@ def main() -> None:
     p.add_argument("--repilot-prompt", default="default", choices=["default", "recovery"])
     p.add_argument("--checkpoint-eval", default=None, metavar="RUN_NAME",
                    help="eval the best checkpoint of a finished run (needs results/remote/<run>/ collected)")
+    p.add_argument("--chain", default=None, metavar="RUN_NAME",
+                   help="one detached job: pool GRPO then best-checkpoint test eval (uses --repilot-prompt)")
     p.add_argument("--checkpoint-prompt", default="default", choices=["default", "recovery"])
     p.add_argument("--checkpoint-step", type=int, default=None, help="default: the run's best step")
     p.add_argument("--pilot-name", default="grpo-4b-pilot-v1")
@@ -120,6 +139,8 @@ def main() -> None:
         plans.append(("prompt_baseline", *prompt_baseline_plan(args.baseline_name)))
     if args.repilot:
         plans.append(("pilot", *repilot_plan(args.repilot_name, args.repilot_prompt)))
+    if args.chain:
+        plans.append(("chain", *chain_plan(args.chain, args.repilot_prompt)))
     if args.checkpoint_eval:
         plans.append(("checkpoint_eval", *checkpoint_eval_plan(args.checkpoint_eval, "grpo-4b",
                                                                 args.checkpoint_prompt, args.checkpoint_step)))
@@ -130,14 +151,23 @@ def main() -> None:
 
     os.environ["MODAL_PROFILE"] = args.modal_profile
     os.environ["APISHIFT_TRAIN_GPU"] = "H100"
-    os.environ["APISHIFT_TRAIN_TIMEOUT_S"] = str(REPILOT_TIMEOUT_S if args.repilot else PILOT_TIMEOUT_S)
+    os.environ["APISHIFT_TRAIN_TIMEOUT_S"] = str(REPILOT_TIMEOUT_S if (args.repilot or args.chain)
+                                                 else PILOT_TIMEOUT_S)
+    os.environ["APISHIFT_CHAIN_TIMEOUT_S"] = str(CHAIN_TIMEOUT_S)
     os.environ["APISHIFT_MODEL"] = "qwen3-4b"
     os.environ["APISHIFT_EVAL_JOB_TIMEOUT_S"] = str(EVAL_JOB_TIMEOUT_S)
     import modal
 
     launched = {}
     for name, spec, gpu_usd, cpu_usd in plans:
-        if name == "pilot":
+        if name == "chain":
+            from train import modal_chain as mod
+
+            with modal.enable_output(), mod.app.run(detach=True):
+                call = mod.chain_job.spawn(spec["train"], spec["eval"])
+            app_name, gpu = mod.app.name, "H100+L4"
+            spec = {**spec, "run_name": spec["train"]["run_name"]}
+        elif name == "pilot":
             from train import modal_art as mod
 
             with modal.enable_output(), mod.app.run(detach=True):

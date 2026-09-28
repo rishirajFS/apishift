@@ -44,6 +44,8 @@ MODEL_KEY = os.environ.get("APISHIFT_MODEL", "qwen3-1.7b")
 CFG = MODELS[MODEL_KEY]
 # Optional LoRA adapter "name=/ckpt/<dir>", served next to the base model.
 LORA = os.environ.get("APISHIFT_LORA")
+# Runtime LoRA: the server accepts adapters via POST /v1/load_lora_adapter (checkpoint chosen later).
+RUNTIME_LORA = os.environ.get("APISHIFT_RUNTIME_LORA") == "1"
 CKPT = "/ckpt"
 
 app = modal.App(f"apishift-serve-{MODEL_KEY.replace('.', '-')}" + ("-lora" if LORA else ""))
@@ -62,7 +64,8 @@ download_image = (
     .uv_pip_install("huggingface_hub==2.0.0")
     .env({"HF_HOME": f"{CACHE}/hf"})
 )
-model_secret = modal.Secret.from_dict({"APISHIFT_MODEL": MODEL_KEY, **({"APISHIFT_LORA": LORA} if LORA else {})})
+model_secret = modal.Secret.from_dict({"APISHIFT_MODEL": MODEL_KEY, **({"APISHIFT_LORA": LORA} if LORA else {}),
+                                      **({"APISHIFT_RUNTIME_LORA": "1"} if RUNTIME_LORA else {})})
 
 
 def weights_dir(repo: str) -> str:
@@ -106,9 +109,13 @@ def serve() -> None:
         "--reasoning-parser", "qwen3",
         "--seed", "0",
     ]
+    env = dict(os.environ)
     if LORA:
         cmd += ["--enable-lora", "--max-lora-rank", "32", "--lora-modules", LORA]
-    subprocess.Popen(cmd)
+    elif RUNTIME_LORA:
+        cmd += ["--enable-lora", "--max-lora-rank", "32"]
+        env["VLLM_ALLOW_RUNTIME_LORA_UPDATING"] = "True"
+    subprocess.Popen(cmd, env=env)
 
 
 # --- Detached eval job: Inspect runs on Modal against `serve`, results go to the checkpoints Volume ---

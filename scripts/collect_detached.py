@@ -54,10 +54,13 @@ def main() -> None:
         name = spec.get("run_name") or spec.get("name")
         status = call_status(info["call_id"])
         dest = REPO / "results" / "remote" / name
-        if kind == "pilot":
+        if kind in ("pilot", "chain"):
             volume_get(f"jobs/{name}.json", dest)
             if status != "running":
                 volume_get(f"runs/{name}", dest)
+            if kind == "chain" and status != "running":
+                ev = spec["eval"]["name"]
+                volume_get(f"evals/{ev}", REPO / "results" / "remote" / ev)
         else:
             volume_get(f"evals/{name}/job.json", dest)
             if status != "running":
