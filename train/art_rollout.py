@@ -107,12 +107,12 @@ def interleave(messages: list[Message], choices: list[Any]) -> list[Any]:
 
 
 async def rollout(model: Any, task: Task, spec: Spec, seed: int, sampling: Sampling,
-                  policy_name: str) -> tuple[Any, dict[str, Any]]:
+                  policy_name: str, prompt_variant: str = "default") -> tuple[Any, dict[str, Any]]:
     """One episode -> (art.Trajectory, APIShift trace)."""
     import art
 
     policy = ArtPolicy(model.openai_client(), model.get_inference_name(), sampling, policy_name)
-    trace = await arun_episode(task, spec, policy, seed)
+    trace = await arun_episode(task, spec, policy, seed, prompt_variant=prompt_variant)
     traj = art.Trajectory(
         messages_and_choices=interleave(trace["messages"], policy.choices),
         tools=trace["tools"],

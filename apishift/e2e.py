@@ -27,7 +27,7 @@ from apishift.agent.scripted import (
     UnknownToolAgent,
 )
 from apishift.envs import DOMAINS, LiveEnv
-from apishift.envs.mutations import MUTATION_TYPES, NoMutation, Spec
+from apishift.envs.mutations import MUTATION_TYPES, TEST_TYPES, NoMutation, Spec
 from apishift.episode import dumps_trace, run_episode
 from apishift.sampling import episodes
 from apishift.tasks.model import Task
@@ -76,7 +76,7 @@ def _showcase(pairs: list[tuple[Task, Spec]]) -> set[str]:
         types_by_task[task.id].add(spec.type)
     chosen: dict[str, str] = {}
     for task, _ in pairs:
-        if task.split == "test" and task.domain not in chosen and types_by_task[task.id] == set(MUTATION_TYPES):
+        if task.split == "test" and task.domain not in chosen and types_by_task[task.id] == set(TEST_TYPES):
             chosen[task.domain] = task.id
     return set(chosen.values())
 

@@ -15,7 +15,14 @@ from pathlib import Path
 import pytest
 
 from apishift.e2e import run
-from apishift.envs.mutations import HELDOUT_TYPES, MUTATION_TYPES, TRAIN_TYPES
+from apishift.envs.mutations import (
+    DIVERSITY_TYPES,
+    HELDOUT_TYPES,
+    MUTATION_TYPES,
+    SEEN_EVAL_TYPES,
+    TEST_TYPES,
+    TRAIN_TYPES,
+)
 
 REPO = Path(__file__).resolve().parents[2]
 COMMITTED = REPO / "artifacts" / "e2e"
@@ -64,7 +71,7 @@ def test_manifest_hashes_are_correct(runs):
 
 def test_traces_written_with_reward_and_mutation(runs):
     traces = sorted((runs[0] / "traces").glob("*.json"))
-    assert len(traces) >= 3 * len(MUTATION_TYPES)
+    assert len(traces) >= 3 * len(TEST_TYPES)
     for path in traces:
         tr = json.loads(path.read_text())
         for key in ("messages", "calls", "reward", "mutation", "seed", "task", "min_turns"):
@@ -105,8 +112,12 @@ def test_e2_mutation_is_solvable_with_full_reward(sweep, mtype):
         assert oracle["turns"] == e["min_turns"]
 
 
+# types whose first stale call does not have to fail: the change shows up in a successful response
+SILENT_TYPES = ("none", "pagination_change", "response_field_rename", "enum_value_rename")
+
+
 def test_error_discovery_is_penalized_but_can_succeed(sweep):
-    mutated = [e for e in sweep["episodes"] if e["mutation"]["type"] not in ("none", "pagination_change")]
+    mutated = [e for e in sweep["episodes"] if e["mutation"]["type"] not in SILENT_TYPES]
     recovered = [e for e in mutated if e["agents"]["oracle_error"]["success"]]
     assert len(recovered) >= 0.8 * len(mutated)
     for e in recovered:
@@ -140,10 +151,29 @@ def test_e6_heldout_types_only_in_test(sweep):
 def test_coverage_every_type_every_domain(sweep):
     cov = sweep["coverage"]
     for domain in ("calendar", "payments", "ecommerce"):
-        for mtype in TRAIN_TYPES:
+        for mtype in SEEN_EVAL_TYPES:
             assert cov["train"][domain][mtype] >= 20, (domain, mtype)
-        for mtype in MUTATION_TYPES:
+        for mtype in TEST_TYPES:
             assert cov["test"][domain][mtype] >= 5, (domain, mtype)
+    for mtype in DIVERSITY_TYPES:  # extra training variety; not every type fits every domain
+        assert sum(cov["train"][d][mtype] for d in cov["train"]) >= 20, mtype
+
+
+def test_test_split_is_frozen(sweep):
+    """New change types are training-only: the benchmark and all its baselines stay comparable."""
+    frozen = json.loads((Path(__file__).parent / "fixtures" / "test_split_episodes_s0.json").read_text())
+    now = sorted(({"task_id": e["task_id"], "mutation": e["mutation"], "min_turns": e["min_turns"]}
+                  for e in sweep["episodes"] if e["split"] == "test"),
+                 key=lambda r: (r["task_id"], r["mutation"]["type"]))
+    assert now == frozen
+
+
+def test_diversity_types_only_in_train_and_val(sweep):
+    for e in sweep["episodes"]:
+        if e["mutation"]["type"] in DIVERSITY_TYPES:
+            assert e["split"] in ("train", "val"), e["task_id"]
+    assert set(TRAIN_TYPES) == set(SEEN_EVAL_TYPES) | set(DIVERSITY_TYPES)
+    assert set(MUTATION_TYPES) == {"none"} | set(TRAIN_TYPES) | set(HELDOUT_TYPES)
 
 
 def test_turn_budget_leaves_room_to_adapt(sweep):

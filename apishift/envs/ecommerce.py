@@ -5,12 +5,16 @@ from __future__ import annotations
 from apishift.envs.domain import Domain, fetch, put
 from apishift.envs.errors import conflict, invalid, not_found
 from apishift.envs.mutations import (
+    API_VERSION_SITE,
     Deprecation,
+    EnumValueRename,
     FixedParam,
     FormatChangeSpec,
     NewRequiredField,
     PaginationChange,
     RenameParam,
+    ResponseFieldRename,
+    TypeChangeSpec,
 )
 from apishift.envs.schema import Endpoint, Param
 
@@ -261,6 +265,21 @@ SITES = {
         Deprecation("create_order", "checkout", "Check out a new order.",
                     param_map=(("items", "line_items"),)),
     ),
+    # diversity types (training only; test split unchanged)
+    "response_field_rename": (
+        ResponseFieldRename("name", "product_name"),
+        ResponseFieldRename("status", "state"),
+    ),
+    "enum_value_rename": (
+        EnumValueRename("status", (("pending", "open"), ("shipped", "in_transit"), ("delivered", "fulfilled"),
+                                   ("cancelled", "canceled")),
+                        ("list_orders", "get_order", "create_order", "cancel_order", "update_shipping_address",
+                         "apply_coupon")),
+        EnumValueRename("reason", (("damaged", "arrived_damaged"), ("wrong_item", "incorrect_item"),
+                                   ("no_longer_needed", "changed_mind")), ("create_return",)),
+    ),
+    "type_change": (TypeChangeSpec(("quantity",), "int_to_string"),),
+    "required_version_param": (API_VERSION_SITE,),
     "pagination_change": tuple(PaginationChange("list_orders", size) for size in (2, 3)),
 }
 

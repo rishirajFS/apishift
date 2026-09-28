@@ -18,9 +18,13 @@ from apishift.agent.loop import simulate
 from apishift.agent.scripted import OracleAgent, StaleAgent
 from apishift.envs import DOMAINS
 from apishift.envs.mutations import (
+    DIVERSITY_TYPES,
     HELDOUT_TYPES,
     MUTATION_TYPES,
+    SEEN_EVAL_TYPES,
+    TEST_TYPES,
     TRAIN_TYPES,
+    Compound,
     ErrorSchemaChange,
     NewRequiredField,
     NoMutation,
@@ -33,7 +37,7 @@ from apishift.tasks.model import Task
 SPLIT_TYPES = {
     "train": ("none", *TRAIN_TYPES),
     "val": ("none", *TRAIN_TYPES),
-    "test": MUTATION_TYPES,
+    "test": TEST_TYPES,  # frozen: diversity types are training-only
 }
 
 
@@ -50,7 +54,21 @@ def candidate_specs(domain: str, mtype: str) -> tuple[Spec, ...]:
         inner = [s for s in (*sites["rename_param"], *sites["new_required_field"])
                  if isinstance(s, (RenameParam, NewRequiredField))]
         return tuple(ErrorSchemaChange(s) for s in inner)
-    return tuple(sites[mtype])
+    if mtype == "compound_change":
+        return compound_candidates(domain)
+    return tuple(sites.get(mtype, ()))
+
+
+MAX_COMPOUND_CANDIDATES = 40
+
+
+def compound_candidates(domain: str) -> tuple[Spec, ...]:
+    """Pairs of seen-type changes of different types, a stable sample per domain."""
+    sites = DOMAINS[domain].sites
+    singles = [(t, s) for t in SEEN_EVAL_TYPES for s in sites.get(t, ())]
+    pairs = [Compound(a, b) for i, (ta, a) in enumerate(singles) for tb, b in singles[i + 1:] if ta != tb]
+    _rng("compound", domain).shuffle(pairs)
+    return tuple(pairs[:MAX_COMPOUND_CANDIDATES])
 
 
 def is_valid_for(task: Task, spec: Spec, seed: int) -> bool:
@@ -75,6 +93,8 @@ def sample_mutation(task: Task, mtype: str, seed: int) -> Spec | None:
         raise ValueError(f"unknown mutation type: {mtype}")
     if mtype in HELDOUT_TYPES and task.split != "test":
         raise ValueError(f"held-out type {mtype} requested for {task.split} task {task.id}")
+    if mtype in DIVERSITY_TYPES and task.split == "test":
+        raise ValueError(f"training-only type {mtype} requested for test task {task.id}")
     return _sample(task.id, mtype, seed)
 
 

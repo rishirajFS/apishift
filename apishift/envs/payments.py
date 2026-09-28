@@ -8,12 +8,16 @@ from __future__ import annotations
 from apishift.envs.domain import Domain, fetch, put
 from apishift.envs.errors import conflict, invalid
 from apishift.envs.mutations import (
+    API_VERSION_SITE,
     Deprecation,
+    EnumValueRename,
     FixedParam,
     FormatChangeSpec,
     NewRequiredField,
     PaginationChange,
     RenameParam,
+    ResponseFieldRename,
+    TypeChangeSpec,
 )
 from apishift.envs.schema import Endpoint, Param
 
@@ -249,6 +253,20 @@ SITES = {
                     param_map=(("due_date", "due_on"),)),
         Deprecation("list_customers", "search_customers", "Search customers."),
     ),
+    # diversity types (training only; test split unchanged)
+    "response_field_rename": (
+        ResponseFieldRename("name", "full_name"),
+        ResponseFieldRename("description", "statement_descriptor"),
+        ResponseFieldRename("memo", "note"),
+    ),
+    "enum_value_rename": (
+        EnumValueRename("status", (("succeeded", "paid"), ("refunded", "reversed"),
+                                   ("partially_refunded", "partially_reversed"), ("open", "unpaid"),
+                                   ("paid", "settled"), ("void", "voided")),
+                        ("list_charges", "create_charge", "list_invoices", "create_invoice", "void_invoice")),
+    ),
+    "type_change": (TypeChangeSpec(("amount", "amount_refunded"), "dollars_to_decimal_string"),),
+    "required_version_param": (API_VERSION_SITE,),
     "pagination_change": tuple(
         PaginationChange(ep, size)
         for ep in ("list_customers", "list_charges", "list_invoices")

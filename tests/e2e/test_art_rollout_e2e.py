@@ -71,6 +71,24 @@ def test_oracle_through_art_policy_gets_full_reward_and_clean_history():
         assert len(mac) == len(api_messages(trace["messages"]))
 
 
+def test_prompt_variant_reaches_the_model_through_art_policy():
+    task = next(t for t in all_tasks() if t.split == "train" and t.template == "refund_full")
+    spec = sample_mutation(task, "required_version_param", 0)
+    server = FakeServer(OracleAgent(task, spec, "docs"))
+    trace = asyncio.run(arun_episode(task, spec, ArtPolicy(server, "fake", Sampling(), "fake"), 0,
+                                     prompt_variant="recovery"))
+    assert trace["success"] and trace["prompt_variant"] == "recovery"
+    assert all("may have changed" in req["messages"][0]["content"] for req in server.requests)
+
+
+def test_rollout_forwards_prompt_variant():
+    import inspect
+
+    from train.art_rollout import rollout
+
+    assert "prompt_variant" in inspect.signature(rollout).parameters
+
+
 def test_sft_examples_one_per_turn_with_inline_reasoning():
     task = next(t for t in all_tasks() if t.split == "train" and t.template == "cancel_order")
     _, _, trace = run(task, sample_mutation(task, "new_required_field", 0))

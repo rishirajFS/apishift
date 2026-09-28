@@ -6,12 +6,15 @@ from apishift.envs.domain import Domain, fetch, put
 from apishift.envs.errors import conflict, invalid, not_found
 from apishift.envs.formats import validate_format
 from apishift.envs.mutations import (
+    API_VERSION_SITE,
     Deprecation,
     FixedParam,
     FormatChangeSpec,
     NewRequiredField,
     PaginationChange,
     RenameParam,
+    ResponseFieldRename,
+    TypeChangeSpec,
 )
 from apishift.envs.schema import Endpoint, Param
 
@@ -206,6 +209,14 @@ SITES = {
                     param_map=(("title", "summary"),)),
         Deprecation("list_contacts", "list_people", "List people in the user's directory."),
     ),
+    # diversity types (training only; test split unchanged)
+    "response_field_rename": (
+        ResponseFieldRename("email", "email_address"),
+        ResponseFieldRename("name", "display_name"),
+        ResponseFieldRename("title", "summary"),
+    ),
+    "type_change": (TypeChangeSpec(("minutes_before",), "int_to_string"),),
+    "required_version_param": (API_VERSION_SITE,),
     "pagination_change": tuple(
         PaginationChange(ep, size) for ep in ("list_events", "list_contacts") for size in (2, 3)
     ),

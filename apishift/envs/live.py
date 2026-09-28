@@ -14,7 +14,7 @@ from typing import Any
 
 from apishift.envs.domain import Domain
 from apishift.envs.errors import ApiError, error_envelope, ok_envelope
-from apishift.envs.mutations import Deprecation, Spec
+from apishift.envs.mutations import Spec
 from apishift.envs.schema import State, validate_args
 
 DOCS_TOOL_NAME = "get_api_docs"
@@ -101,8 +101,9 @@ class LiveEnv:
         if not isinstance(name, str):
             raise ApiError(400, "parameter_invalid_type", "Invalid type for 'endpoint': expected string.",
                            param="endpoint")
-        if name in self._gone and isinstance(self.spec, Deprecation):
-            return self.spec.gone_docs()
+        gone_docs = self.spec.gone_docs_for(name) if name in self._gone else None
+        if gone_docs is not None:
+            return gone_docs
         endpoint = self._live.get(name)
         if endpoint is None:
             raise ApiError(404, "unknown_endpoint", f"No documentation for endpoint: {name}",

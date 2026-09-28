@@ -59,7 +59,7 @@ def _run_canonical_steps(task: Task, step: Callable[[Call], Generator]) -> LiveP
             call = canon.send(body)
     except StopIteration:
         return "Done."
-    except (TargetNotFound, _GiveUp) as exc:
+    except (TargetNotFound, _GiveUp, KeyError, TypeError) as exc:  # KeyError: a response field was renamed
         return f"I could not complete the task: {exc}"
 
 
@@ -78,12 +78,14 @@ def stale_plan(task: Task) -> LivePlan:
 
 
 def oracle_plan(task: Task, spec: Spec, discover: str) -> LivePlan:
-    discovered = False
+    discovered: set[str] = set()
 
     def step(call: Call):
-        nonlocal discovered
-        if spec.needs_discovery and not discovered and spec.affects(call.endpoint, dict(call.args)):
-            discovered = True
+        # one docs read (or stale probe) per change still unknown at this call; a compound change
+        # spread over two endpoints needs two
+        pending = spec.discovery_keys(call.endpoint, dict(call.args)) - discovered
+        if pending:
+            discovered.update(pending)
             if discover == "docs":
                 yield (DOCS_TOOL_NAME, {"endpoint": call.endpoint})
             else:

@@ -57,7 +57,10 @@ class TargetNotFound(Exception):
 def pick(body: dict, match: Callable[[dict], bool]) -> dict:
     """Pick exactly one matching item from a list response."""
     items = body.get("items", body.get("data", []))
-    found = [it for it in items if match(it)]
+    try:
+        found = [it for it in items if match(it)]
+    except KeyError as exc:  # a field the plan matches on is missing (renamed)
+        raise TargetNotFound(f"missing field {exc}") from None
     if len(found) != 1:
         raise TargetNotFound(f"{len(found)} matches")
     return found[0]

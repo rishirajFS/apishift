@@ -42,9 +42,10 @@ def pilot_plan(run_name: str) -> tuple[dict, float, float]:
 REPILOT_TIMEOUT_S = 8100
 
 
-def repilot_plan(run_name: str) -> tuple[dict, float, float]:
+def repilot_plan(run_name: str, prompt_variant: str = "default") -> tuple[dict, float, float]:
     """4B GRPO from base on the adaptation-hard pool (scan 4 samples/episode, then 30 steps)."""
     cfg = {"run_name": run_name, "base_model": "Qwen/Qwen3-4B", "skip_sft": True, "pool_scan": True,
+           "prompt_variant": prompt_variant,
            "scan_samples": 4, "grpo_steps": 30, "groups_per_step": 8, "rollouts_per_group": 6,
            "grpo_lr": 3e-6, "val_every": 10, "time_budget_s": REPILOT_TIMEOUT_S - 600,
            "total_gpu_budget_s": REPILOT_TIMEOUT_S - 600}
@@ -99,6 +100,7 @@ def main() -> None:
     p.add_argument("--prompt-baseline", action="store_true", help="4B thinking + recovery prompt, 3 seeds, L4")
     p.add_argument("--repilot", action="store_true", help="4B GRPO on the adaptation-hard pool, H100")
     p.add_argument("--repilot-name", default="grpo-4b-pool-v1")
+    p.add_argument("--repilot-prompt", default="default", choices=["default", "recovery"])
     p.add_argument("--checkpoint-eval", default=None, metavar="RUN_NAME",
                    help="eval the best checkpoint of a finished run (needs results/remote/<run>/ collected)")
     p.add_argument("--checkpoint-prompt", default="default", choices=["default", "recovery"])
@@ -117,7 +119,7 @@ def main() -> None:
     if args.prompt_baseline:
         plans.append(("prompt_baseline", *prompt_baseline_plan(args.baseline_name)))
     if args.repilot:
-        plans.append(("pilot", *repilot_plan(args.repilot_name)))
+        plans.append(("pilot", *repilot_plan(args.repilot_name, args.repilot_prompt)))
     if args.checkpoint_eval:
         plans.append(("checkpoint_eval", *checkpoint_eval_plan(args.checkpoint_eval, "grpo-4b",
                                                                 args.checkpoint_prompt, args.checkpoint_step)))

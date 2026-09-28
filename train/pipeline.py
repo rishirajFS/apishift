@@ -63,6 +63,8 @@ class PipelineConfig:
     min_pool: int = 24
     # GPU seconds allowed across ALL attempts (Modal restarts preempted GPU functions); 0 = time_budget_s
     total_gpu_budget_s: int = 0
+    # system prompt for every rollout and val episode ("recovery" = the prompting baseline's prompt)
+    prompt_variant: str = "default"
 
 
 class Run:
@@ -92,7 +94,7 @@ class Run:
 
     async def one(self, model, task, spec, name: str):
         async with self.sem:
-            return await rollout(model, task, spec, self.cfg.seed, self.sampling, name)
+            return await rollout(model, task, spec, self.cfg.seed, self.sampling, name, self.cfg.prompt_variant)
 
 
 def group_of(mtype: str) -> str:

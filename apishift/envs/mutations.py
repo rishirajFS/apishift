@@ -29,8 +29,14 @@ from apishift.envs.errors import ApiError
 from apishift.envs.formats import FORMAT_CHANGES
 from apishift.envs.schema import Endpoint, Param
 
-TRAIN_TYPES = ("rename_param", "format_change", "new_required_field", "deprecation_with_migration")
+# Seen types appear in train, val and test. Diversity types add training variety only, so the
+# test split (and every baseline measured on it) is unchanged. Held-out types are test-only.
+SEEN_EVAL_TYPES = ("rename_param", "format_change", "new_required_field", "deprecation_with_migration")
+DIVERSITY_TYPES = ("response_field_rename", "enum_value_rename", "type_change", "required_version_param",
+                   "compound_change")
+TRAIN_TYPES = (*SEEN_EVAL_TYPES, *DIVERSITY_TYPES)
 HELDOUT_TYPES = ("pagination_change", "error_schema_change")
+TEST_TYPES = ("none", *SEEN_EVAL_TYPES, *HELDOUT_TYPES)
 MUTATION_TYPES = ("none", *TRAIN_TYPES, *HELDOUT_TYPES)
 
 DEFAULT_ERROR_FORMAT = (
@@ -82,6 +88,13 @@ class _Spec:
 
     def affected_endpoints(self, eps: Mapping[str, Endpoint]) -> tuple[str, ...]:
         return ()
+
+    def discovery_keys(self, name: str, args: Args) -> frozenset[str]:
+        """What a docs-first agent must still learn before this call (one docs read covers the call)."""
+        return frozenset({self.type}) if self.needs_discovery and self.affects(name, args) else frozenset()
+
+    def gone_docs_for(self, name: str) -> dict[str, Any] | None:
+        return None
 
 
 @dataclass(frozen=True)
@@ -256,6 +269,9 @@ class Deprecation(_Spec):
             }
         }
 
+    def gone_docs_for(self, name: str) -> dict[str, Any] | None:
+        return self.gone_docs() if name == self.old_endpoint else None
+
     def gone_docs(self) -> dict[str, Any]:
         return {
             "endpoint": self.old_endpoint,
@@ -383,9 +399,180 @@ class ErrorSchemaChange(_Spec):
         return self.inner.affected_endpoints(eps)
 
 
+@dataclass(frozen=True)
+class ResponseFieldRename(_Spec):
+    """A field is renamed in every response body (requests unchanged), e.g. `email` -> `email_address`.
+
+    Visible in any successful response, so no docs read is needed.
+    """
+
+    type: ClassVar[str] = "response_field_rename"
+    needs_discovery: ClassVar[bool] = False
+    old: str
+    new: str
+
+    def live_endpoints(self, eps):
+        note = f"Response field '{self.old}' was renamed to '{self.new}'."
+        return {n: replace(ep, returns=_swap_word(ep.returns, self.old, self.new), notes=(*ep.notes, note))
+                if _mentions(ep.returns, self.old) else ep for n, ep in eps.items()}
+
+    def render(self, name, live_args, body):
+        return _rename_keys(body, self.old, self.new)
+
+    def oracle_response(self, body):
+        return _rename_keys(body, self.new, self.old)
+
+    def affected_endpoints(self, eps):
+        return tuple(n for n, ep in eps.items() if _mentions(ep.returns, self.old))
+
+
+@dataclass(frozen=True)
+class EnumValueRename(_Spec):
+    """Values of an enum field are renamed in requests and responses, e.g. order status pending -> open."""
+
+    type: ClassVar[str] = "enum_value_rename"
+    field: str
+    mapping: tuple[tuple[str, str], ...]
+    endpoints: tuple[str, ...]  # endpoints whose request or response carries the field
+
+    def _fwd(self) -> dict[str, str]:
+        return dict(self.mapping)
+
+    def _inv(self) -> dict[str, str]:
+        return {b: a for a, b in self.mapping}
+
+    def _note(self) -> str:
+        pairs = ", ".join(f"'{a}' is now '{b}'" for a, b in self.mapping)
+        return f"Values of '{self.field}' changed: {pairs}."
+
+    def live_endpoints(self, eps):
+        fwd = self._fwd()
+
+        def conv(p: Param) -> Param:
+            if p.name != self.field or not p.enum:
+                return p
+            return replace(p, enum=tuple(fwd.get(v, v) for v in p.enum))
+
+        return {n: (replace(ep, params=tuple(conv(p) for p in ep.params), notes=(*ep.notes, self._note()))
+                    if n in self.endpoints else ep) for n, ep in eps.items()}
+
+    def to_canonical(self, name, args):
+        inv = self._inv()
+        return name, {k: inv.get(v, v) if k == self.field else v for k, v in args.items()}
+
+    def render(self, name, live_args, body):
+        return _map_values(body, self.field, self._fwd())
+
+    def affects(self, name, args):
+        return name in self.endpoints
+
+    def oracle_request(self, name, args):
+        fwd = self._fwd()
+        return name, {k: fwd.get(v, v) if k == self.field else v for k, v in args.items()}
+
+    def oracle_response(self, body):
+        return _map_values(body, self.field, self._inv())
+
+    def affected_endpoints(self, eps):
+        return tuple(n for n in eps if n in self.endpoints)
+
+
+@dataclass(frozen=True)
+class TypeChangeSpec(FormatChangeSpec):
+    """A parameter's JSON type changes, e.g. amounts become decimal strings ("160.99")."""
+
+    type: ClassVar[str] = "type_change"
+
+
+@dataclass(frozen=True)
+class GlobalRequiredParam(_Spec):
+    """Every endpoint now requires a version parameter (like a Stripe-Version header)."""
+
+    type: ClassVar[str] = "required_version_param"
+    param: Param
+    oracle_value: Any
+
+    def live_endpoints(self, eps):
+        p = replace(self.param, required=True)
+        return {n: ep.with_params((*ep.params, p)) for n, ep in eps.items()}
+
+    def to_canonical(self, name, args):
+        return name, {k: v for k, v in args.items() if k != self.param.name}
+
+    def affects(self, name, args):
+        return True
+
+    def oracle_request(self, name, args):
+        return name, {**args, self.param.name: self.oracle_value}
+
+    def affected_endpoints(self, eps):
+        return tuple(eps)
+
+
+@dataclass(frozen=True)
+class Compound(_Spec):
+    """Two changes at once. The live API is second(first(canonical))."""
+
+    type: ClassVar[str] = "compound_change"
+    first: Any
+    second: Any
+
+    def to_dict(self):
+        return {"type": self.type, "first": self.first.to_dict(), "second": self.second.to_dict()}
+
+    @property
+    def needs_discovery(self) -> bool:  # type: ignore[override]
+        return self.first.needs_discovery or self.second.needs_discovery
+
+    def live_endpoints(self, eps):
+        return self.second.live_endpoints(self.first.live_endpoints(eps))
+
+    def gone(self):
+        return {**self.first.gone(), **self.second.gone()}
+
+    def gone_docs_for(self, name):
+        return self.second.gone_docs_for(name) or self.first.gone_docs_for(name)
+
+    def to_canonical(self, name, args):
+        return self.first.to_canonical(*self.second.to_canonical(name, args))
+
+    def render(self, name, live_args, body):
+        return self.second.render(name, live_args, self.first.render(name, live_args, body))
+
+    def render_error(self, envelope):
+        return self.second.render_error(self.first.render_error(envelope))
+
+    def error_format(self):
+        return self.second.error_format()
+
+    def affects(self, name, args):
+        return self.first.affects(name, args) or self.second.affects(name, args)
+
+    def discovery_keys(self, name, args):
+        return (frozenset(f"first:{k}" for k in self.first.discovery_keys(name, args))
+                | frozenset(f"second:{k}" for k in self.second.discovery_keys(name, args)))
+
+    def oracle_request(self, name, args):
+        return self.second.oracle_request(*self.first.oracle_request(name, args))
+
+    def oracle_response(self, body):
+        return self.first.oracle_response(self.second.oracle_response(body))
+
+    def affected_endpoints(self, eps):
+        seen = self.first.affected_endpoints(eps)
+        return seen + tuple(n for n in self.second.affected_endpoints(eps) if n not in seen)
+
+
+# Shared site: every domain can require an API version on every request.
+API_VERSION_SITE = GlobalRequiredParam(
+    Param("api_version", "string", "API version to use. Required on every request.", enum=("2026-09-01",)),
+    "2026-09-01",
+)
+
 Spec = (
     NoMutation | RenameParam | FormatChangeSpec | NewRequiredField | Deprecation
-    | PaginationChange | ErrorSchemaChange
+    | PaginationChange | ErrorSchemaChange | ResponseFieldRename | EnumValueRename
+    | TypeChangeSpec | GlobalRequiredParam | Compound
 )
 
 _TITLES = {404: "Not Found", 409: "Conflict", 410: "Gone", 422: "Unprocessable Content"}
@@ -404,6 +591,37 @@ def _walk(value: Any, fields: tuple[str, ...], fn) -> Any:
     if isinstance(value, list):
         return [_walk(v, fields, fn) for v in value]
     return value
+
+
+def _rename_keys(value: Any, old: str, new: str) -> Any:
+    if isinstance(value, dict):
+        return {(new if k == old else k): _rename_keys(v, old, new) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_rename_keys(v, old, new) for v in value]
+    return value
+
+
+def _map_values(value: Any, field: str, mapping: dict[str, str]) -> Any:
+    if isinstance(value, dict):
+        return {k: (mapping.get(v, v) if k == field and isinstance(v, str) else _map_values(v, field, mapping))
+                for k, v in value.items()}
+    if isinstance(value, list):
+        return [_map_values(v, field, mapping) for v in value]
+    return value
+
+
+def _word_re(word: str):
+    import re
+
+    return re.compile(rf"(?<![A-Za-z_]){re.escape(word)}(?![A-Za-z_])")
+
+
+def _mentions(text: str, word: str) -> bool:
+    return bool(_word_re(word).search(text or ""))
+
+
+def _swap_word(text: str, old: str, new: str) -> str:
+    return _word_re(old).sub(new, text or "")
 
 
 def _has_key(value: Any, fields: tuple[str, ...]) -> bool:
