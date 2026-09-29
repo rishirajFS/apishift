@@ -1,0 +1,104 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.0161,
+      "mean_reward": 0.8643,
+      "mean_turns": 3.0333,
+      "n": 30,
+      "success_rate": 0.8667
+    },
+    "heldout": {
+      "invalid_call_rate": 0.2025,
+      "mean_reward": 0.4409,
+      "mean_turns": 3.6552,
+      "n": 58,
+      "success_rate": 0.4655
+    },
+    "seen": {
+      "invalid_call_rate": 0.2754,
+      "mean_reward": 0.7858,
+      "mean_turns": 4.4083,
+      "n": 120,
+      "success_rate": 0.8417
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.3182,
+      "mean_reward": 0.721,
+      "mean_turns": 3.9,
+      "n": 30,
+      "success_rate": 0.7667
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 0.2816,
+      "mean_reward": 0.5897,
+      "mean_turns": 4.4,
+      "n": 30,
+      "success_rate": 0.6333
+    },
+    "format_change": {
+      "invalid_call_rate": 0.3152,
+      "mean_reward": 0.784,
+      "mean_turns": 4.0,
+      "n": 30,
+      "success_rate": 0.8333
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.2521,
+      "mean_reward": 0.8343,
+      "mean_turns": 4.9333,
+      "n": 30,
+      "success_rate": 0.9
+    },
+    "none": {
+      "invalid_call_rate": 0.0161,
+      "mean_reward": 0.8643,
+      "mean_turns": 3.0333,
+      "n": 30,
+      "success_rate": 0.8667
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.0545,
+      "mean_reward": 0.2814,
+      "mean_turns": 2.8571,
+      "n": 28,
+      "success_rate": 0.2857
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.2348,
+      "mean_reward": 0.8037,
+      "mean_turns": 4.8,
+      "n": 30,
+      "success_rate": 0.8667
+    }
+  },
+  "decoding": {
+    "enable_thinking": true,
+    "max_tokens": 4096,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "errors": [],
+  "eval_log": "2026-09-28T23-44-30-00-00_apishift-eval_DpQkENboZbxgFdHD6MPvPU.eval",
+  "lora": null,
+  "model": "qwen3-4b",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.2319,
+    "mean_reward": 0.7009,
+    "mean_turns": 4.0,
+    "n": 208,
+    "success_rate": 0.7404
+  },
+  "prompt_variant": "recovery",
+  "seed": 2,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 208,
+    "max_turns": 0
+  }
+}

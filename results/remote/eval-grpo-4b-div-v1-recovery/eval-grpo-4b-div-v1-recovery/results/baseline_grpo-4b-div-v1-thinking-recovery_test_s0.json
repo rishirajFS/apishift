@@ -1,0 +1,104 @@
+{
+  "by_group": {
+    "control": {
+      "invalid_call_rate": 0.0,
+      "mean_reward": 0.9,
+      "mean_turns": 3.2,
+      "n": 30,
+      "success_rate": 0.9
+    },
+    "heldout": {
+      "invalid_call_rate": 0.2065,
+      "mean_reward": 0.5341,
+      "mean_turns": 3.6552,
+      "n": 58,
+      "success_rate": 0.569
+    },
+    "seen": {
+      "invalid_call_rate": 0.3064,
+      "mean_reward": 0.7455,
+      "mean_turns": 4.475,
+      "n": 120,
+      "success_rate": 0.8
+    }
+  },
+  "by_mutation_type": {
+    "deprecation_with_migration": {
+      "invalid_call_rate": 0.3711,
+      "mean_reward": 0.7223,
+      "mean_turns": 4.1333,
+      "n": 30,
+      "success_rate": 0.7667
+    },
+    "error_schema_change": {
+      "invalid_call_rate": 0.2804,
+      "mean_reward": 0.735,
+      "mean_turns": 4.5333,
+      "n": 30,
+      "success_rate": 0.8
+    },
+    "format_change": {
+      "invalid_call_rate": 0.3371,
+      "mean_reward": 0.78,
+      "mean_turns": 3.9667,
+      "n": 30,
+      "success_rate": 0.8333
+    },
+    "new_required_field": {
+      "invalid_call_rate": 0.2797,
+      "mean_reward": 0.738,
+      "mean_turns": 4.9,
+      "n": 30,
+      "success_rate": 0.8
+    },
+    "none": {
+      "invalid_call_rate": 0.0,
+      "mean_reward": 0.9,
+      "mean_turns": 3.2,
+      "n": 30,
+      "success_rate": 0.9
+    },
+    "pagination_change": {
+      "invalid_call_rate": 0.0417,
+      "mean_reward": 0.3189,
+      "mean_turns": 2.7143,
+      "n": 28,
+      "success_rate": 0.3214
+    },
+    "rename_param": {
+      "invalid_call_rate": 0.2564,
+      "mean_reward": 0.7417,
+      "mean_turns": 4.9,
+      "n": 30,
+      "success_rate": 0.8
+    }
+  },
+  "decoding": {
+    "enable_thinking": true,
+    "max_tokens": 4096,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "errors": [],
+  "eval_log": "2026-09-28T23-17-55-00-00_apishift-eval_gHMFa8c66cZLWQcqyoMM2f.eval",
+  "lora": null,
+  "model": "qwen3-4b",
+  "n_errors": 0,
+  "n_samples": 208,
+  "overall": {
+    "invalid_call_rate": 0.2508,
+    "mean_reward": 0.7088,
+    "mean_turns": 4.0625,
+    "n": 208,
+    "success_rate": 0.75
+  },
+  "prompt_variant": "recovery",
+  "seed": 0,
+  "split": "test",
+  "status": "success",
+  "terminated": {
+    "final_answer": 207,
+    "max_turns": 1
+  }
+}

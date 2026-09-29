@@ -1,0 +1,30 @@
+{
+ "config_hash": "6988c64d6730d3ca",
+ "attempt": 1,
+ "base_val": {
+  "n": 132,
+  "success": 0.8712,
+  "reward": 0.8142,
+  "turns": 4.508,
+  "success_control": 0.8667,
+  "success_seen": 0.8718,
+  "errors": 0,
+  "step": 0
+ },
+ "pool_ready": true,
+ "grpo_start_step": 0,
+ "history": [
+  {
+   "step": 10,
+   "success": 0.9015,
+   "reward": 0.8423
+  },
+  {
+   "step": 20,
+   "success": 0.8092,
+   "reward": 0.7597
+  }
+ ],
+ "gpu_s_prev_attempts": 0.0,
+ "gpu_s_this_attempt": 6506.596448174
+}

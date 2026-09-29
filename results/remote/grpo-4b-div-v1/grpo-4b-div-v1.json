@@ -1,0 +1,68 @@
+{
+ "launched": 1790630417.4177556,
+ "config": {
+  "run_name": "grpo-4b-div-v1",
+  "base_model": "Qwen/Qwen3-4B",
+  "skip_sft": true,
+  "pool_scan": true,
+  "prompt_variant": "recovery",
+  "scan_samples": 4,
+  "grpo_steps": 30,
+  "groups_per_step": 8,
+  "rollouts_per_group": 6,
+  "grpo_lr": 3e-06,
+  "val_every": 10,
+  "time_budget_s": 7500,
+  "total_gpu_budget_s": 7500
+ },
+ "status": "done",
+ "chain": true,
+ "eval_spec": {
+  "name": "eval-grpo-4b-div-v1-recovery",
+  "model": "qwen3-4b",
+  "served": "grpo-4b-div-v1",
+  "variant": "grpo-4b-div-v1-thinking-recovery",
+  "split": "test",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "thinking": true,
+  "prompt_variant": "recovery",
+  "max_connections": 48,
+  "queue_timeout_s": 10800,
+  "max_eval_s": 3600,
+  "sample_time_limit_s": 900
+ },
+ "train_call_id": "fc-01M3MY8FMJ15GG98RANHNMBEDY",
+ "gpu": "H100",
+ "gpu_started": 1790630452.9126818,
+ "gpu_ended": 1790636990.4956214,
+ "gpu_seconds": 6538,
+ "est_gpu_usd": 7.17,
+ "eval_started": 1790636993.9694946,
+ "eval_step": 10,
+ "eval_name": "eval-grpo-4b-div-v1-recovery",
+ "chain_finished": 1790639818.3965702,
+ "eval": {
+  "name": "eval-grpo-4b-div-v1-recovery",
+  "by_seed": {
+   "0": {
+    "control": 0.9,
+    "seen": 0.8,
+    "heldout": 0.569
+   },
+   "1": {
+    "control": 0.9,
+    "seen": 0.8917,
+    "heldout": 0.4828
+   },
+   "2": {
+    "control": 0.8667,
+    "seen": 0.8417,
+    "heldout": 0.4655
+   }
+  }
+ }
+}

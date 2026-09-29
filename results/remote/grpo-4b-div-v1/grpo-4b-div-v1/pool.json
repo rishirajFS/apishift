@@ -1,0 +1,1633 @@
+[
+ {
+  "task_id": "calendar.add_attendee.00",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.00",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.00",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.00",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.00",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.00",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.01",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.01",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.01",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.02",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.03",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.03",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.03",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.03",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.03",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.03",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.04",
+  "mutation_type": "compound_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.04",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.04",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.04",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.04",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.04",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.05",
+  "mutation_type": "compound_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.05",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.05",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.05",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.05",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.05",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.06",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.add_attendee.06",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.cancel_event.00",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.cancel_event.06",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.00",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.00",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.00",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.00",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.01",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.01",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.02",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.03",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.03",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.03",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.03",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.04",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.04",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.05",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.05",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.05",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.06",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_meeting.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_reminder.01",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_reminder.01",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_reminder.03",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.create_reminder.05",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "calendar.reschedule_event.03",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.cancel_order.01",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.cancel_order.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.01",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.06",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.06",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.06",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.create_return.06",
+  "mutation_type": "type_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.place_order.00",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.place_order.02",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.place_order.03",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.place_order.06",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "ecommerce.place_order.06",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.00",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.00",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.00",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.00",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.00",
+  "mutation_type": "type_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.02",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.02",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.02",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.02",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.02",
+  "mutation_type": "type_change",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.04",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.04",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.04",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.04",
+  "mutation_type": "type_change",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.06",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.06",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.06",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.charge_customer.06",
+  "mutation_type": "type_change",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.00",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.00",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.00",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.00",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.00",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.00",
+  "mutation_type": "type_change",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.01",
+  "mutation_type": "type_change",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.02",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.02",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.02",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.02",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.02",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.02",
+  "mutation_type": "type_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.04",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.04",
+  "mutation_type": "format_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.04",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.04",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.04",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.04",
+  "mutation_type": "type_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.05",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.6667,
+  "control_rate": 0.5,
+  "samples": 3
+ },
+ {
+  "task_id": "payments.create_invoice.05",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.05",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.05",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.05",
+  "mutation_type": "type_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "compound_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.create_invoice.06",
+  "mutation_type": "type_change",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.00",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.00",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.00",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.00",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.00",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.00",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.01",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.02",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.02",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.02",
+  "mutation_type": "rename_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.02",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "compound_change",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.03",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.04",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.04",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.04",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.04",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.04",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.06",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.06",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_full.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.5,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.00",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.00",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.00",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.00",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.00",
+  "mutation_type": "type_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.02",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.02",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.02",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.02",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.02",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.02",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.03",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.03",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.03",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.03",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.03",
+  "mutation_type": "type_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.04",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.04",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.04",
+  "mutation_type": "rename_param",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.04",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.04",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "compound_change",
+  "success_rate": 0.25,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.05",
+  "mutation_type": "type_change",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.06",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.06",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.06",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.refund_partial.06",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.00",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.25,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.01",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.02",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.02",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.02",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.02",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.02",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.03",
+  "mutation_type": "compound_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.03",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.03",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.04",
+  "mutation_type": "compound_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.04",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.04",
+  "mutation_type": "format_change",
+  "success_rate": 0.5,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.04",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.05",
+  "mutation_type": "deprecation_with_migration",
+  "success_rate": 0.5,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.05",
+  "mutation_type": "enum_value_rename",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.05",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.05",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.05",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 0.75,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.06",
+  "mutation_type": "format_change",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.06",
+  "mutation_type": "new_required_field",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.06",
+  "mutation_type": "rename_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.06",
+  "mutation_type": "required_version_param",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ },
+ {
+  "task_id": "payments.void_invoice.06",
+  "mutation_type": "response_field_rename",
+  "success_rate": 0.75,
+  "control_rate": 1.0,
+  "samples": 4
+ }
+]
