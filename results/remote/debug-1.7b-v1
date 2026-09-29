@@ -1,0 +1,18 @@
+{
+ "run_name": "debug-1.7b-v1",
+ "base_model": "Qwen/Qwen3-1.7B",
+ "seed": 0,
+ "sft_samples": 4,
+ "sft_keep_per_episode": 2,
+ "sft_lr": 5e-05,
+ "grpo_steps": 20,
+ "groups_per_step": 8,
+ "rollouts_per_group": 6,
+ "grpo_lr": 1e-05,
+ "max_tokens": 3072,
+ "concurrency": 96,
+ "lora_rank": 16,
+ "time_budget_s": 8400,
+ "art_path": "/ckpt/art",
+ "out_root": "/ckpt/runs"
+}
